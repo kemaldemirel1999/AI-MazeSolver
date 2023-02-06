@@ -6,7 +6,7 @@ class Maze:
         self.grid = []
         self.maze_map = {}
         maze = self.read_maze_from_text_file()
-        maze = [[1,1,1,1,1], [1,1,1,1,1], [1,1,1,1,1], [1,1,1,1,1]]
+        maze = [[1,1,1,1,1], [1,1,1,1,1], [1,1,1,1,1], [1,1,1,1,1],[1,1,1,1,1]]
         path = self.a_star_algorithm(maze)
         
     def read_maze_from_text_file(self):
@@ -20,7 +20,6 @@ class Maze:
             for j in range(1,len(maze[0])+1):
                 self.grid.append((j,i))
                 self.maze_map[j,i]={'E':0,'W':0,'N':0,'S':0}
-        print(self.maze_map)
         return self.grid 
     
     def diff(self,first_cell, second_cell):
@@ -49,6 +48,7 @@ class Maze:
             if currCell == (1,1):
                 break
             for d in 'ESNW':
+                print(currCell,"  ", d)
                 if self.maze_map[currCell][d] == True:
                     if d=='E':
                         childCell = (currCell[0], currCell[1]+1)

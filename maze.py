@@ -8,9 +8,12 @@ class Maze:
         self.grid = []
         self.maze_map = {}
         #maze = self.read_maze_from_text_file()
-        maze = [ ['#','#','#','0','#'], ['#','#','#','#','#'], ['#','#','#','#','#'], ['#','#','#','#','#'], ['#','#','#','#','#'] ]
-        self.maze_map = self.make_maze_map(maze)
-        #path = self.a_star_algorithm(maze)
+        maze = [ ['0','0','0','0','0'], ['#','#','#','#','0'], ['#','#','#','#','0'], ['#','#','#','#','0'], ['#','#','#','#','0'] ]
+        self.make_maze_map(maze)
+        for val in self.maze_map:
+            print(val,", ",self.maze_map[val])
+        path = self.a_star_algorithm(maze)
+        print(path)
         None
         
     def read_maze_from_text_file(self):
@@ -18,42 +21,41 @@ class Maze:
             [print(line) for line in f.readlines()]
         
     def maze_grid(self,maze):
-        for i in range(1,len(maze)+1):
-            for j in range(1,len(maze[0])+1):
+        for i in range(0,len(maze)):
+            for j in range(0,len(maze[0])):
                 self.grid.append((j,i))
         return self.grid
     
     def make_maze_map(self, maze):
         i_length = len(maze)
         j_length = len(maze[0])
-        for i in range(1,len(maze)+1):
-            for j in range(1,len(maze[0])+1):
+        for i in range(0,len(maze)):
+            for j in range(0,len(maze[0])):
                 self.maze_map[j,i]={'E':0,'W':0,'N':0,'S':0}
                 if i+1 <= i_length-1:
-                    if self.is_it_wall(maze[j-1][i+1-1]):
+                    if self.is_it_wall(maze[j][i+1]):
                         self.maze_map[j,i]['E'] = 0
                     else:
                         self.maze_map[j,i]['E'] = 1
-                        print("Girdi")
+                        
                 if i-1 >= 0:                       
-                    if self.is_it_wall(maze[j-1][i-1-1]):
+                    if self.is_it_wall(maze[j][i-1]):
                         self.maze_map[j,i]['W'] = 0
                     else:
                         self.maze_map[j,i]['W'] = 1  
-                        print("Girdi")                  
+                                        
                 if j-1 >= 0:                        
-                    if self.is_it_wall(maze[j-1-1][i-1]):
+                    if self.is_it_wall(maze[j-1][i]):
                         self.maze_map[j,i]['N'] = 0
                     else:
                         self.maze_map[j,i]['N'] = 1 
-                        print("Girdi")                   
+                        
                 if j+1 <= j_length-1:    
-                    if self.is_it_wall(maze[j+1-1][i-1]):
+                    if self.is_it_wall(maze[j+1][i]):
                         self.maze_map[j,i]['S'] = 0
                     else:
                         self.maze_map[j,i]['S'] = 1  
-                        print("Girdi")                  
-        return self.maze_map
+                        
     
     def is_it_wall(self, symbol):
         if symbol == '#':
@@ -69,14 +71,14 @@ class Maze:
         
     def a_star_algorithm(self,maze):
         # Start point is given
-        start = (5, 5)
+        start = (4,4)
         
         # G score array is created and start point's g_score added as 0
         g_score = {cell:float('inf') for cell in self.maze_grid(maze)}
         g_score[start]=0
         
         # Goal cell is defined
-        goal = (1,1)
+        goal = (0,0)
         
         # F score array is created and start point's g_score added as 0
         f_score = {cell:float('inf') for cell in self.maze_grid(maze)}
@@ -89,7 +91,6 @@ class Maze:
         
         while not open.empty():
             currCell = open.get()[2]
-            
             if currCell == goal:
                 break
             for d in 'ESNW':
@@ -114,10 +115,10 @@ class Maze:
 
         fwdPath = {}
         cell = goal
-        #while cell != start:
-        #    fwdPath[aPath[cell]] = cell
-        #    cell = aPath[cell]
-        #return fwdPath
+        while cell != start:
+            fwdPath[aPath[cell]] = cell
+            cell = aPath[cell]
+        return fwdPath
 
 class Main:
     if __name__ == '__main__':

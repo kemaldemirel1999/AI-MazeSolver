@@ -2,18 +2,25 @@ from queue import PriorityQueue
 
 class Maze:
     
-    # Indexleme sistemi 1 den başlayarak ilerleyecek şekilde implement ettim.
-    
     def __init__(self):
-        
         self.maze_map = {}
+        filename = "maze.txt"
+        if(filename.endswith(".txt")):
+            self.txt_maze_solver()
+        elif(filename.endswith(".jpg")):
+            self.jpg_maze_solver()
+    
+    def txt_maze_solver(self):
         #maze = self.read_maze_from_text_file()
         maze = [ ['0','0','#','#'], ['#','0','#','#'], ['#','0','0','0'], ['#','#','#','0'],['#','#','#','0'] ]
-        for val in maze:
-            print(val)
         self.make_maze_map(maze)
-        for val in self.maze_map:
-            print(val,", ", self.maze_map[val])
+        path = self.a_star_algorithm(maze)
+        print(path)
+        
+    def jpg_maze_solver(self):
+        maze = self.read_maze_from_jpg_file()
+        #maze = [ ['0','0','#','#'], ['#','0','#','#'], ['#','0','0','0'], ['#','#','#','0'],['#','#','#','0'] ]
+        self.make_maze_map(maze)
         path = self.a_star_algorithm(maze)
         print(path)
         
@@ -72,17 +79,10 @@ class Maze:
     
         
     def a_star_algorithm(self,maze):
-        # Start point is given
         start = (4,3)
-        
-        # G score array is created and start point's g_score added as 0
         g_score = {cell:float('inf') for cell in self.maze_grid(maze)}
         g_score[start]=0
-        
-        # Goal cell is defined
         goal = (0,0)
-        
-        # F score array is created and start point's g_score added as 0
         f_score = {cell:float('inf') for cell in self.maze_grid(maze)}
         f_score[start] = self.h_diff(start,goal)
         

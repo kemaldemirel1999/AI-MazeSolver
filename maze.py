@@ -6,14 +6,14 @@ class Maze:
     
     def __init__(self):
         self.maze_map = {}
-        self.start_point = (3,4)
-        filename = "maze2.txt"
-        
+        self.start_point = (5,4)
+        self.goal_point = (1,0)
+        filename = "txtmaze.txt"
         if(filename.endswith(".txt")):
-            maze = TxtReader(filename)            
+            maze = TxtReader().read_txt_maze(filename)            
         elif(filename.endswith(".jpg")):
             maze = JpgReader(filename)
-        maze = [ ['0','0','0','0','0'], ['#','#','0','0','0'], ['#','0','0','0','#'], ['#','0','0','0','0']]
+        #maze = [ ['0','0','0','0','0'], ['#','#','0','0','0'], ['#','0','0','0','#'], ['#','0','0','0','0']]
         self.make_maze_map(maze)
         path = self.a_star_algorithm(maze)
         print(path)
@@ -75,7 +75,7 @@ class Maze:
         start = self.start_point
         g_score = {cell:float('inf') for cell in self.maze_grid(maze)}
         g_score[start]=0
-        goal = (0,0)
+        goal = self.goal_point
         f_score = {cell:float('inf') for cell in self.maze_grid(maze)}
         f_score[start] = self.h_diff(start,goal)
         

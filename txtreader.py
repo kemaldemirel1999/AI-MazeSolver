@@ -1,14 +1,26 @@
 
 
+
+import os
+import pathlib
+
+
 class TxtReader:
     
-    def __init__(self, filename):
+    def __init__(self):
         self.maze = []
-        self.read_txt_maze(filename)
     
     def read_txt_maze(self,filename):
-        with open(filename) as f:
-            [print(line) for line in f.readlines()]
+        path = os.getcwd()+"/maze/"
+        with open(path+filename) as f:
+            for line in f.readlines():
+                tmp = []
+                for val in line:
+                    if val != '\n':
+                        tmp.append(val)    
+                self.maze.append(tmp)
+        
+        return self.maze
         
         
     

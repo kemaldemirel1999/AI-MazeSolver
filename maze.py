@@ -5,56 +5,58 @@ class Maze:
     # Indexleme sistemi 1 den başlayarak ilerleyecek şekilde implement ettim.
     
     def __init__(self):
-        self.grid = []
+        
         self.maze_map = {}
         #maze = self.read_maze_from_text_file()
-        maze = [ ['0','0','0','0','0'], ['#','#','#','#','0'], ['#','#','#','#','0'], ['#','#','#','#','0'], ['#','#','#','#','0'] ]
+        maze = [ ['0','0','#','#'], ['#','0','#','#'], ['#','0','0','0'], ['#','#','#','0'],['#','#','#','0'] ]
+        for val in maze:
+            print(val)
         self.make_maze_map(maze)
         for val in self.maze_map:
-            print(val,", ",self.maze_map[val])
+            print(val,", ", self.maze_map[val])
         path = self.a_star_algorithm(maze)
         print(path)
-        None
         
     def read_maze_from_text_file(self):
         with open('maze.txt') as f:
             [print(line) for line in f.readlines()]
         
     def maze_grid(self,maze):
+        grid = []
         for i in range(0,len(maze)):
             for j in range(0,len(maze[0])):
-                self.grid.append((j,i))
-        return self.grid
+                grid.append((j,i))
+        return grid
     
     def make_maze_map(self, maze):
-        i_length = len(maze)
-        j_length = len(maze[0])
-        for i in range(0,len(maze)):
-            for j in range(0,len(maze[0])):
-                self.maze_map[j,i]={'E':0,'W':0,'N':0,'S':0}
-                if i+1 <= i_length-1:
-                    if self.is_it_wall(maze[j][i+1]):
-                        self.maze_map[j,i]['E'] = 0
+        col_length = len(maze[0])
+        row_length = len(maze)
+        for col in range(0,len(maze[0])):
+            for row in range(0,len(maze)):
+                self.maze_map[row,col]={'E':0,'W':0,'N':0,'S':0}
+                if col+1 < col_length:
+                    if self.is_it_wall(maze[row][col+1]):
+                        self.maze_map[row,col]['E'] = 0
                     else:
-                        self.maze_map[j,i]['E'] = 1
+                        self.maze_map[row,col]['E'] = 1
                         
-                if i-1 >= 0:                       
-                    if self.is_it_wall(maze[j][i-1]):
-                        self.maze_map[j,i]['W'] = 0
+                if col-1 >= 0:                       
+                    if self.is_it_wall(maze[row][col-1]):
+                        self.maze_map[row,col]['W'] = 0
                     else:
-                        self.maze_map[j,i]['W'] = 1  
+                        self.maze_map[row,col]['W'] = 1  
                                         
-                if j-1 >= 0:                        
-                    if self.is_it_wall(maze[j-1][i]):
-                        self.maze_map[j,i]['N'] = 0
+                if row-1 >= 0:                        
+                    if self.is_it_wall(maze[row-1][col]):
+                        self.maze_map[row,col]['N'] = 0
                     else:
-                        self.maze_map[j,i]['N'] = 1 
+                        self.maze_map[row,col]['N'] = 1 
                         
-                if j+1 <= j_length-1:    
-                    if self.is_it_wall(maze[j+1][i]):
-                        self.maze_map[j,i]['S'] = 0
+                if row+1 < row_length:    
+                    if self.is_it_wall(maze[row+1][col]):
+                        self.maze_map[row,col]['S'] = 0
                     else:
-                        self.maze_map[j,i]['S'] = 1  
+                        self.maze_map[row,col]['S'] = 1  
                         
     
     def is_it_wall(self, symbol):
@@ -71,7 +73,7 @@ class Maze:
         
     def a_star_algorithm(self,maze):
         # Start point is given
-        start = (4,4)
+        start = (4,3)
         
         # G score array is created and start point's g_score added as 0
         g_score = {cell:float('inf') for cell in self.maze_grid(maze)}

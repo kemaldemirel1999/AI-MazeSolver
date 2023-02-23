@@ -1,34 +1,22 @@
 from queue import PriorityQueue
+from txtreader import TxtReader
+from jpgreader import JpgReader
 
 class Maze:
     
     def __init__(self):
         self.maze_map = {}
-        filename = "maze.txt"
+        self.start_point = (3,4)
+        filename = "maze2.txt"
+        
         if(filename.endswith(".txt")):
-            self.txt_maze_solver()
+            maze = TxtReader(filename)            
         elif(filename.endswith(".jpg")):
-            self.jpg_maze_solver()
-    
-    def txt_maze_solver(self):
-        #maze = self.read_maze_from_text_file()
-        maze = [ ['0','0','#','#','#'], ['#','0','#','#','#'], ['#','0','0','0','0'], ['#','#','#','#','0']]
-        for val in maze:
-            print(val)
+            maze = JpgReader(filename)
+        maze = [ ['0','0','0','0','0'], ['#','#','0','0','0'], ['#','0','0','0','#'], ['#','0','0','0','0']]
         self.make_maze_map(maze)
         path = self.a_star_algorithm(maze)
         print(path)
-        
-    def jpg_maze_solver(self):
-        maze = self.read_maze_from_jpg_file()
-        #maze = [ ['0','0','#','#'], ['#','0','#','#'], ['#','0','0','0'], ['#','#','#','0'],['#','#','#','0'] ]
-        self.make_maze_map(maze)
-        path = self.a_star_algorithm(maze)
-        print(path)
-        
-    def read_maze_from_text_file(self):
-        with open('maze.txt') as f:
-            [print(line) for line in f.readlines()]
         
     def maze_grid(self,maze):
         grid = []
@@ -69,8 +57,11 @@ class Maze:
                         
     
     def is_it_wall(self, symbol):
-        if symbol == '#':
+        if symbol == '#' or symbol == '$':
             return True
+        elif symbol == '.' or symbol == '0':
+            return False
+        print("Unknown Cell")
         return False
     
     def h_diff(self,first_cell, second_cell):
@@ -81,7 +72,7 @@ class Maze:
     
         
     def a_star_algorithm(self,maze):
-        start = (3,4)
+        start = self.start_point
         g_score = {cell:float('inf') for cell in self.maze_grid(maze)}
         g_score[start]=0
         goal = (0,0)

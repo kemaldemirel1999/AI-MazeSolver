@@ -6,18 +6,30 @@ class Maze:
     
     def __init__(self):
         self.maze_map = {}
-        self.start_point = (5,4)
-        self.goal_point = (1,0)
         filename = "txtmaze.txt"
         if(filename.endswith(".txt")):
             maze = TxtReader().read_txt_maze(filename)            
         elif(filename.endswith(".jpg")):
             maze = JpgReader(filename)
         #maze = [ ['0','0','0','0','0'], ['#','#','0','0','0'], ['#','0','0','0','#'], ['#','0','0','0','0']]
+        self.start_point = self.find_start_point(maze)
+        self.goal_point = self.find_goal_point(maze)
         self.make_maze_map(maze)
         path = self.a_star_algorithm(maze)
         print(path)
         
+    def find_start_point(self, maze):
+        for row in range(0,len(maze)):
+            for col in range(0,len(maze[0])):
+                if maze[row][col] == "s" or maze[row][col] == "S":
+                    return (row,col)
+    
+    def find_goal_point(self, maze):
+        for row in range(0,len(maze)):
+            for col in range(0,len(maze[0])):
+                if maze[row][col] == "g" or maze[row][col] == "G":
+                    return (row,col)        
+    
     def maze_grid(self,maze):
         grid = []
         for i in range(0,len(maze)):

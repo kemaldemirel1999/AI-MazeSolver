@@ -12,7 +12,9 @@ class Maze:
     
     def txt_maze_solver(self):
         #maze = self.read_maze_from_text_file()
-        maze = [ ['0','0','#','#'], ['#','0','#','#'], ['#','0','0','0'], ['#','#','#','0'],['#','#','#','0'] ]
+        maze = [ ['0','0','#','#','#'], ['#','0','#','#','#'], ['#','0','0','0','0'], ['#','#','#','#','0']]
+        for val in maze:
+            print(val)
         self.make_maze_map(maze)
         path = self.a_star_algorithm(maze)
         print(path)
@@ -32,7 +34,7 @@ class Maze:
         grid = []
         for i in range(0,len(maze)):
             for j in range(0,len(maze[0])):
-                grid.append((j,i))
+                grid.append((i,j))
         return grid
     
     def make_maze_map(self, maze):
@@ -79,7 +81,7 @@ class Maze:
     
         
     def a_star_algorithm(self,maze):
-        start = (4,3)
+        start = (3,4)
         g_score = {cell:float('inf') for cell in self.maze_grid(maze)}
         g_score[start]=0
         goal = (0,0)

@@ -2,37 +2,70 @@ from queue import PriorityQueue
 
 class Maze:
     
+    # Indexleme sistemi 1 den başlayarak ilerleyecek şekilde implement ettim.
+    
     def __init__(self):
         self.grid = []
         self.maze_map = {}
-        maze = self.read_maze_from_text_file()
-        maze = [[1,1,1,1,1], [1,1,1,1,1], [1,1,1,1,1], [1,1,1,1,1], [1,1,1,1,1]]
-        path = self.a_star_algorithm(maze)
+        #maze = self.read_maze_from_text_file()
+        maze = [ ['#','#','#','0','#'], ['#','#','#','#','#'], ['#','#','#','#','#'], ['#','#','#','#','#'], ['#','#','#','#','#'] ]
+        self.maze_map = self.make_maze_map(maze)
+        #path = self.a_star_algorithm(maze)
+        None
         
     def read_maze_from_text_file(self):
         with open('maze.txt') as f:
             [print(line) for line in f.readlines()]
-
-    def read_maze_from_jpg(self):
-        None
-
+        
     def maze_grid(self,maze):
         for i in range(1,len(maze)+1):
             for j in range(1,len(maze[0])+1):
                 self.grid.append((j,i))
+        return self.grid
+    
+    def make_maze_map(self, maze):
+        i_length = len(maze)
+        j_length = len(maze[0])
+        for i in range(1,len(maze)+1):
+            for j in range(1,len(maze[0])+1):
                 self.maze_map[j,i]={'E':0,'W':0,'N':0,'S':0}
-        return self.grid 
+                if i+1 <= i_length-1:
+                    if self.is_it_wall(maze[j-1][i+1-1]):
+                        self.maze_map[j,i]['E'] = 0
+                    else:
+                        self.maze_map[j,i]['E'] = 1
+                        print("Girdi")
+                if i-1 >= 0:                       
+                    if self.is_it_wall(maze[j-1][i-1-1]):
+                        self.maze_map[j,i]['W'] = 0
+                    else:
+                        self.maze_map[j,i]['W'] = 1  
+                        print("Girdi")                  
+                if j-1 >= 0:                        
+                    if self.is_it_wall(maze[j-1-1][i-1]):
+                        self.maze_map[j,i]['N'] = 0
+                    else:
+                        self.maze_map[j,i]['N'] = 1 
+                        print("Girdi")                   
+                if j+1 <= j_length-1:    
+                    if self.is_it_wall(maze[j+1-1][i-1]):
+                        self.maze_map[j,i]['S'] = 0
+                    else:
+                        self.maze_map[j,i]['S'] = 1  
+                        print("Girdi")                  
+        return self.maze_map
+    
+    def is_it_wall(self, symbol):
+        if symbol == '#':
+            return True
+        return False
     
     def h_diff(self,first_cell, second_cell):
         x1, y1 = first_cell
         x2, y2 = second_cell
         return abs(x1-x2) + abs(y1-y2)
 
-    def print_path(self):
-        None
-        
-    def trace_path(self):
-        None
+    
         
     def a_star_algorithm(self,maze):
         # Start point is given
@@ -81,10 +114,10 @@ class Maze:
 
         fwdPath = {}
         cell = goal
-        while cell != start:
-            fwdPath[aPath[cell]] = cell
-            cell = aPath[cell]
-        return fwdPath
+        #while cell != start:
+        #    fwdPath[aPath[cell]] = cell
+        #    cell = aPath[cell]
+        #return fwdPath
 
 class Main:
     if __name__ == '__main__':

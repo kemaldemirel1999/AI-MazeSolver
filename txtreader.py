@@ -1,8 +1,4 @@
-
-
-
 import os
-
 
 class TxtReader:
     

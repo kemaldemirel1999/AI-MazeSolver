@@ -12,10 +12,12 @@ class JpgReader:
         path = os.getcwd()+"/maze/"
         pywhatkit.image_to_ascii_art(path+filename,path+'jpgmaze')
         unparsed_maze = self.read_jpg_text_file("jpgmaze.txt")
-        self.parse_jpg_maze(unparsed_maze)
-        return "jpg_trial.txt"
+        self.parse_jpg_maze(unparsed_maze, filename)
+        filename = filename[0:len(filename)-4] + ".txt"
+        return filename
     
-    def parse_jpg_maze(self, unparsed_maze):
+    def parse_jpg_maze(self, unparsed_maze, filename):
+        maze_indexes = []
         for line in unparsed_maze:
             left = -1
             right = len(line)
@@ -33,14 +35,43 @@ class JpgReader:
             if wall_found:
                 start = left
                 end = right+1
-                self.maze.append(line[start:end])
+                maze_indexes.append([start,end])
+                #self.maze.append(line[start:end])
                 
+        west = maze_indexes[0][0]
+        east = maze_indexes[0][1]
+        for val in maze_indexes:
+            if val[0] < west:
+                west = val[0]
+            if val[1] > east:
+                east = val[1]
+         
+        maze_indexes = []       
+        
+        
+        north = maze_indexes[0][0]
+        south = maze_indexes[0][1]
+        for val in maze_indexes:
+            if val[0] < north:
+                north = val[0]
+            if val[1] > south:
+                south = val[1]
+        
+        #self.clear_maze()
+        #self.write_maze_to_txt(filename)
+                
+    def clear_maze(self):
+        
         for i in range(0,len(self.maze)):
             for j in range(0,len(self.maze[i])):
                 if not(self.none_symbols.__contains__(self.maze[i][j])):
                     self.maze[i][j] = '#'
-                
-        with open(os.getcwd()+"/maze/"+'jpg_trial.txt', 'w') as f:
+                else:
+                    self.maze[i][j] = '.'
+                    
+    def write_maze_to_txt(self,filename):
+        filename = filename[0:len(filename)-4] + ".txt"
+        with open(os.getcwd()+"/maze/"+filename, 'w') as f:
             for line in self.maze:
                 for symbol in line:
                     f.write(symbol)    
@@ -58,7 +89,7 @@ class JpgReader:
                         tmp.append(val)    
                 unparsed_maze.append(tmp)
         try:
-            #os.remove(path+filename)    
+            os.remove(path+filename)    
             None
         except:
             print("File not found")

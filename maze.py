@@ -1,11 +1,12 @@
 from queue import PriorityQueue
 from txtreader import TxtReader
 from jpgreader import JpgReader
+import os
 
 class Maze:
     
     def __init__(self):
-        filename = "transparent.png"
+        filename = "maze.jpg"
         self.start_maze_solver(filename)
         
     def start_maze_solver(self,filename):
@@ -16,7 +17,8 @@ class Maze:
         elif(filename.endswith(".jpg") or filename.endswith(".png")):
             # Image's background must be transparent.
             file = str(JpgReader().read_jpg_maze(filename))
-            maze = TxtReader().read_txt_maze(file) 
+            maze = TxtReader().read_txt_maze(file)
+            
             
         #self.start_point = self.find_start_point(maze)
         #self.goal_point = self.find_goal_point(maze)

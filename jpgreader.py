@@ -47,19 +47,43 @@ class JpgReader:
                 east = val[1]
          
         maze_indexes = []       
-        
-        
+        for col in range(len(unparsed_maze[0])): 
+            up = -1
+            down = len(unparsed_maze)
+            wall_found = False
+            for i in range(len(unparsed_maze)):
+                up = up + 1
+                if not( self.none_symbols.__contains__(unparsed_maze[up][col])):
+                    wall_found = True
+                    break
+            for i in range(len(unparsed_maze)):
+                down = down - 1
+                if not( self.none_symbols.__contains__(unparsed_maze[down][col])):
+                    wall_found = True
+                    break
+            if wall_found:
+                maze_indexes.append([up,down+1])
+
         north = maze_indexes[0][0]
         south = maze_indexes[0][1]
         for val in maze_indexes:
             if val[0] < north:
                 north = val[0]
             if val[1] > south:
-                south = val[1]
+                south = val[1]    
+        self.get_maze_part(unparsed_maze, east, west, north, south)
+        self.clear_maze()
+        self.write_maze_to_txt(filename)
+         
+    def get_maze_part(self, unparsed_maze, east, west, north, south):
+        curr_row = north
+        row = []
+        while curr_row < south:
+            self.maze.append(unparsed_maze[curr_row][west:east])
+            curr_row = curr_row + 1
         
-        #self.clear_maze()
-        #self.write_maze_to_txt(filename)
-                
+        
+               
     def clear_maze(self):
         
         for i in range(0,len(self.maze)):

@@ -5,18 +5,23 @@ from jpgreader import JpgReader
 class Maze:
     
     def __init__(self):
+        filename = "transparent2.png"
+        self.start_maze_solver(filename)
+        
+    def start_maze_solver(self,filename):
         self.maze_map = {}
-        filename = "txtmaze.txt"
+        
         if(filename.endswith(".txt")):
             maze = TxtReader().read_txt_maze(filename)            
-        elif(filename.endswith(".jpg")):
-            maze = JpgReader(filename)
-        #maze = [ ['0','0','0','0','0'], ['#','#','0','0','0'], ['#','0','0','0','#'], ['#','0','0','0','0']]
-        self.start_point = self.find_start_point(maze)
-        self.goal_point = self.find_goal_point(maze)
-        self.make_maze_map(maze)
-        path = self.a_star_algorithm(maze)
-        print(path)
+        elif(filename.endswith(".jpg") or filename.endswith(".png")):
+            # Image's background must be transparent.
+            maze = JpgReader().read_jpg_maze(filename)
+            
+        #self.start_point = self.find_start_point(maze)
+        #self.goal_point = self.find_goal_point(maze)
+        #self.make_maze_map(maze)
+        #path = self.a_star_algorithm(maze)
+        #print(path)
         
     def find_start_point(self, maze):
         for row in range(0,len(maze)):
@@ -73,7 +78,6 @@ class Maze:
             return True
         elif symbol == '.' or symbol == '0':
             return False
-        print("Unknown Cell")
         return False
     
     def h_diff(self,first_cell, second_cell):

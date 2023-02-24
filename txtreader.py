@@ -2,7 +2,6 @@
 
 
 import os
-import pathlib
 
 
 class TxtReader:

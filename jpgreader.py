@@ -6,14 +6,14 @@ class JpgReader:
     
     def __init__(self):
         self.maze = []
-        self.none_symbols = ['.', '*']
+        self.none_symbols = ['.']
 
     def read_jpg_maze(self, filename):
         path = os.getcwd()+"/maze/"
         pywhatkit.image_to_ascii_art(path+filename,path+'jpgmaze')
         unparsed_maze = self.read_jpg_text_file("jpgmaze.txt")
         self.parse_jpg_maze(unparsed_maze)
-        return self.maze
+        return "jpg_trial.txt"
     
     def parse_jpg_maze(self, unparsed_maze):
         for line in unparsed_maze:
@@ -34,19 +34,18 @@ class JpgReader:
                 start = left
                 end = right+1
                 self.maze.append(line[start:end])
-                #print(line[start : end])
                 
-        with open('trial.txt', 'w') as f:
+        for i in range(0,len(self.maze)):
+            for j in range(0,len(self.maze[i])):
+                if not(self.none_symbols.__contains__(self.maze[i][j])):
+                    self.maze[i][j] = '#'
+                
+        with open(os.getcwd()+"/maze/"+'jpg_trial.txt', 'w') as f:
             for line in self.maze:
                 for symbol in line:
                     f.write(symbol)    
                 f.write("\n")
-             
-                
-            
-            
-            
-        None
+        
         
     def read_jpg_text_file(self, filename):
         path = os.getcwd()+"/maze/"

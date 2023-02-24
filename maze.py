@@ -5,7 +5,7 @@ from jpgreader import JpgReader
 class Maze:
     
     def __init__(self):
-        filename = "transparent2.png"
+        filename = "transparent.png"
         self.start_maze_solver(filename)
         
     def start_maze_solver(self,filename):
@@ -15,7 +15,8 @@ class Maze:
             maze = TxtReader().read_txt_maze(filename)            
         elif(filename.endswith(".jpg") or filename.endswith(".png")):
             # Image's background must be transparent.
-            maze = JpgReader().read_jpg_maze(filename)
+            file = str(JpgReader().read_jpg_maze(filename))
+            maze = TxtReader().read_txt_maze(file) 
             
         #self.start_point = self.find_start_point(maze)
         #self.goal_point = self.find_goal_point(maze)

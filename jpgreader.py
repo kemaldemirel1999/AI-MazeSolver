@@ -113,7 +113,7 @@ class JpgReader:
                         tmp.append(val)    
                 unparsed_maze.append(tmp)
         try:
-            os.remove(path+filename)    
+            #os.remove(path+filename)    
             None
         except:
             print("File not found")

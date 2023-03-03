@@ -6,7 +6,7 @@ import os
 class Maze:
     
     def __init__(self):
-        filename = "maze_start.jpg"
+        filename = "transparent2_start.png"
         self.start_maze_solver(filename)
         
     def start_maze_solver(self,filename):

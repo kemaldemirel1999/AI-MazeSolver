@@ -13,8 +13,86 @@ class JpgReader:
         pywhatkit.image_to_ascii_art(path+filename,path+'jpgmaze')
         unparsed_maze = self.read_jpg_text_file("jpgmaze.txt")
         self.parse_jpg_maze(unparsed_maze, filename)
+        self.find_start_goal_point()
         filename = filename[0:len(filename)-4] + ".txt"
         return filename
+    
+    def find_start_goal_point(self):
+        firstRow, lastRow = self.compareFirstAndLastRow()
+        firstCol, lastCol = self.compareFirstAndLastCol()
+        # . fazla oluyorsa 1
+        print(firstRow,", ", lastRow)
+        print(firstCol,", ", lastCol)
+        #print(self.maze[lastRow])
+    
+    def compareFirstAndLastRow(self):
+        lastRow = self.maze[len(self.maze)-1]
+        firstRow = self.maze[0]
+        numOfDot = 0
+        numOfArrow = 0
+        first = 0
+        last = 0
+        for symbol in lastRow:
+            if(symbol == '.'):
+                numOfDot = numOfDot + 1
+            elif(symbol == '#'):
+                numOfArrow = numOfArrow + 1
+        if(numOfDot>numOfArrow):
+            print("Son satirda . fazla")
+            first = 1
+        else:
+            print("Son satirda # fazla")
+            first = 0
+        numOfDot = 0
+        numOfArrow = 0
+        for symbol in firstRow:
+            if(symbol == '.'):
+                numOfDot = numOfDot + 1
+            elif(symbol == '#'):
+                numOfArrow = numOfArrow + 1
+        if(numOfDot>numOfArrow):
+            print("İlk satirda . fazla")
+            last = 1
+        else:
+            print("İlk satirda # fazla")
+            last = 0
+        return [first,last]
+        
+            
+    def compareFirstAndLastCol(self):
+        numOfDot = 0
+        numOfArrow = 0
+        firstCol = 0
+        lastCol = 0
+        for line in self.maze:
+            symbol = line[0]
+            if(symbol == '.'):
+                numOfDot = numOfDot + 1
+            elif(symbol == '#'):
+                numOfArrow = numOfArrow + 1
+        if(numOfDot>numOfArrow):
+            print("İlk column . fazla")
+            firstCol = 1
+        else:
+            print("İlk column # fazla")
+            firstCol = 0
+        numOfDot = 0
+        numOfArrow = 0
+        for line in self.maze:
+            symbol = line[len(line)-1]
+            if(symbol == '.'):
+                numOfDot = numOfDot + 1
+            elif(symbol == '#'):
+                numOfArrow = numOfArrow + 1
+        if(numOfDot>numOfArrow):
+            print("Son column . fazla")
+            lastCol = 1
+        else:
+            print("Son column # fazla")
+            lastCol = 0
+        return [firstCol,lastCol]
+        
+            
     
     def parse_jpg_maze(self, unparsed_maze, filename):
         maze_indexes = []
@@ -81,11 +159,8 @@ class JpgReader:
         while curr_row < south:
             self.maze.append(unparsed_maze[curr_row][west:east])
             curr_row = curr_row + 1
-        
-        
                
     def clear_maze(self):
-        
         for i in range(0,len(self.maze)):
             for j in range(0,len(self.maze[i])):
                 if not(self.none_symbols.__contains__(self.maze[i][j])):

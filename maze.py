@@ -6,7 +6,7 @@ import os
 class Maze:
     
     def __init__(self):
-        filename = "transparent2_start.png"
+        filename = "test.jpg"
         self.start_maze_solver(filename)
         
     def start_maze_solver(self,filename):
@@ -18,13 +18,32 @@ class Maze:
             # Image's background must be transparent.
             file = str(JpgReader().read_jpg_maze(filename))
             maze = TxtReader().read_txt_maze(file)
-            
+            try:
+                #os.remove(os.getcwd()+"/maze/"+file)    
+                None
+            except:
+                print("File not found")
             
         #self.start_point = self.find_start_point(maze)
         #self.goal_point = self.find_goal_point(maze)
         #self.make_maze_map(maze)
         #path = self.a_star_algorithm(maze)
-        #print(path)
+        #self.tracePath(path,maze)
+        #self.write_maze_to_txt(filename, maze)
+        
+    def write_maze_to_txt(self, filename, maze):
+        filename = "trace_"+filename
+        with open(os.getcwd()+"/maze/Sonuclar"+filename, 'w') as f:
+            for line in maze:
+                for symbol in line:
+                    f.write(symbol)    
+                f.write("\n")
+        
+    def tracePath(self, path, maze):
+        for val in path:
+            if(path[val] == self.goal_point):
+                continue
+            maze[path[val][0]][path[val][1]] = "x";
         
     def find_start_point(self, maze):
         for row in range(0,len(maze)):

@@ -13,16 +13,72 @@ class JpgReader:
         pywhatkit.image_to_ascii_art(path+filename,path+'jpgmaze')
         unparsed_maze = self.read_jpg_text_file("jpgmaze.txt")
         self.parse_jpg_maze(unparsed_maze, filename)
-        self.find_start_goal_point()
         filename = filename[0:len(filename)-4] + ".txt"
         return filename
     
-    def find_start_goal_point(self):
+    def compareSymbols(self, line):
+        numOfDot = 0
+        numOfArrow = 0
+        for symbol in line:
+            if(symbol == '.'):
+                numOfDot = numOfDot + 1
+            elif(symbol == '#'):
+                numOfArrow = numOfArrow + 1
+        if numOfDot>numOfArrow:
+            return 1
+        else:
+            return 0
+                
+    def find_goal_point(self):
+        None
+        
+    def find_start_point(self):
         firstRow, lastRow = self.compareFirstAndLastRow()
         firstCol, lastCol = self.compareFirstAndLastCol()
         # . fazla oluyorsa 1
         print(firstRow,", ", lastRow)
         print(firstCol,", ", lastCol)
+        
+        if firstRow == 1:
+            found = False
+            col_indexes = []
+            for row in range(0,len(self.maze)):
+                line = self.maze[row]
+                if found == True:
+                    break
+                for i in range(0,len(line)):
+                    if(line[i] == '#'):
+                        col_indexes.append(i)
+                        found = True
+            wallRow = 0
+            for row in range(0,len(self.maze)):
+                if(self.compareSymbols(self.maze[row]) == 0):
+                    wallRow = row    
+                    break
+            start_set = False
+            while(wallRow > 0):
+                if start_set == True:
+                    break
+                for index in col_indexes:
+                    if(self.maze[wallRow][index] == '.'):
+                        self.maze[wallRow][index] = 'S'
+                        start_set = True
+                        print("index:",index,", wallRow:",wallRow)
+                        break
+                wallRow = wallRow -1
+            new_maze = []
+            wallRow = wallRow + 1
+            while(wallRow < len(self.maze)):
+                new_maze.append(self.maze[wallRow])
+                wallRow = wallRow + 1
+            return new_maze
+        elif lastRow == 1:
+            None
+        elif firstCol == 1:
+            None
+        elif lastCol == 1:
+            None
+            
         #print(self.maze[lastRow])
     
     def compareFirstAndLastRow(self):
@@ -39,10 +95,10 @@ class JpgReader:
                 numOfArrow = numOfArrow + 1
         if(numOfDot>numOfArrow):
             print("Son satirda . fazla")
-            first = 1
+            last = 1
         else:
             print("Son satirda # fazla")
-            first = 0
+            last = 0
         numOfDot = 0
         numOfArrow = 0
         for symbol in firstRow:
@@ -52,10 +108,10 @@ class JpgReader:
                 numOfArrow = numOfArrow + 1
         if(numOfDot>numOfArrow):
             print("İlk satirda . fazla")
-            last = 1
+            first = 1
         else:
             print("İlk satirda # fazla")
-            last = 0
+            first = 0
         return [first,last]
         
             
@@ -71,10 +127,10 @@ class JpgReader:
             elif(symbol == '#'):
                 numOfArrow = numOfArrow + 1
         if(numOfDot>numOfArrow):
-            print("İlk column . fazla")
+            #print("İlk column . fazla")
             firstCol = 1
         else:
-            print("İlk column # fazla")
+            #print("İlk column # fazla")
             firstCol = 0
         numOfDot = 0
         numOfArrow = 0
@@ -85,10 +141,10 @@ class JpgReader:
             elif(symbol == '#'):
                 numOfArrow = numOfArrow + 1
         if(numOfDot>numOfArrow):
-            print("Son column . fazla")
+            #print("Son column . fazla")
             lastCol = 1
         else:
-            print("Son column # fazla")
+            #print("Son column # fazla")
             lastCol = 0
         return [firstCol,lastCol]
         
@@ -151,6 +207,7 @@ class JpgReader:
                 south = val[1]    
         self.get_maze_part(unparsed_maze, east, west, north, south)
         self.clear_maze()
+        self.maze = self.find_start_goal_point()
         self.write_maze_to_txt(filename)
          
     def get_maze_part(self, unparsed_maze, east, west, north, south):

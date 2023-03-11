@@ -6,7 +6,7 @@ import os
 class Maze:
     
     def __init__(self):
-        filename = "test2.png"
+        filename = "test.jpg"
         self.start_maze_solver(filename)
         
     def start_maze_solver(self,filename):
@@ -16,24 +16,24 @@ class Maze:
             maze = TxtReader().read_txt_maze(filename)            
         elif(filename.endswith(".jpg") or filename.endswith(".png")):
             # Image's background must be transparent.
-            file = str(JpgReader().read_jpg_maze(filename))
-            maze = TxtReader().read_txt_maze(file)
+            filename = str(JpgReader().read_jpg_maze(filename))
+            maze = TxtReader().read_txt_maze(filename)
             try:
                 #os.remove(os.getcwd()+"/maze/"+file)    
                 None
             except:
                 print("File not found")
             
-        #self.start_point = self.find_start_point(maze)
-        #self.goal_point = self.find_goal_point(maze)
-        #self.make_maze_map(maze)
-        #path = self.a_star_algorithm(maze)
-        #self.tracePath(path,maze)
-        #self.write_maze_to_txt(filename, maze)
+        self.start_point = self.find_start_point(maze)
+        self.goal_point = self.find_goal_point(maze)
+        self.make_maze_map(maze)
+        path = self.a_star_algorithm(maze)
+        self.tracePath(path,maze)
+        self.write_maze_to_txt(filename, maze)
         
     def write_maze_to_txt(self, filename, maze):
         filename = "trace_"+filename
-        with open(os.getcwd()+"/maze/Sonuclar"+filename, 'w') as f:
+        with open(os.getcwd()+filename, 'w') as f:
             for line in maze:
                 for symbol in line:
                     f.write(symbol)    

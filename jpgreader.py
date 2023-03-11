@@ -30,7 +30,70 @@ class JpgReader:
             return 0
                 
     def find_goal_point(self):
-        None
+        #SATIRLAR
+        first_row = 0
+        last_row = len(self.maze)-1
+        first_row_indexes = self.getGateIndexes(self.maze[first_row])
+        last_row_indexes = self.getGateIndexes(self.maze[last_row])
+        
+        first_col = []
+        for i in range(self.maze):
+            first_col.append(self.maze[0][i])
+        
+        last_col = []
+        for i in range(self.maze):
+            last_col.append(self.maze[len(self.maze[0]-1)][i])
+            
+        first_col_indexes = self.getGateIndexes(first_col)
+        last_col_indexes = self.getGateIndexes(last_col)
+        
+        if first_row_indexes != None:
+            goal_set = False
+            for i in first_row_indexes:
+                if(goal_set == True):
+                    self.maze[first_row][i] = '#'
+                else:
+                    self.maze[first_row][i] = 'G'  
+                    goal_set = True 
+        elif last_row_indexes != None:
+            goal_set = False
+            for i in last_row_indexes:
+                if(goal_set == True):
+                    self.maze[last_row][i] = '#'
+                else:
+                    self.maze[last_row][i] = 'G'  
+                    goal_set = True
+        elif first_col_indexes != None:
+            goal_set = False
+            for i in first_col_indexes:
+                if(goal_set == True):
+                    self.maze[0][i] = '#'
+                else:
+                    self.maze[0][i] = 'G'  
+                    goal_set = True
+        elif last_col_indexes != None:
+            goal_set = False
+            last_col_index = len(self.maze[0])-1
+            for i in last_col_indexes:
+                if(goal_set == True):
+                    self.maze[last_col_index][i] = '#'
+                else:
+                    self.maze[last_col_index][i] = 'G'  
+                    goal_set = True  
+        return self.maze
+        
+    def getGateIndexes(self, line):
+        indexes = []
+        i = 0
+        for i in range(len(line)):
+            if line[i] == '.':
+                indexes.append(i)
+        if(len(indexes)>0):
+            return indexes
+        else:
+            return None
+    
+                
         
     def find_start_point(self):
         firstRow, lastRow = self.compareFirstAndLastRow()
@@ -63,7 +126,9 @@ class JpgReader:
                     if(self.maze[wallRow][index] == '.'):
                         self.maze[wallRow][index] = 'S'
                         start_set = True
-                        print("index:",index,", wallRow:",wallRow)
+                        for i in range(len(self.maze[wallRow])):
+                            if(self.maze[wallRow][i] == '.'):
+                                self.maze[wallRow][i] = '#'
                         break
                 wallRow = wallRow -1
             new_maze = []
@@ -207,7 +272,8 @@ class JpgReader:
                 south = val[1]    
         self.get_maze_part(unparsed_maze, east, west, north, south)
         self.clear_maze()
-        self.maze = self.find_start_goal_point()
+        self.maze = self.find_start_point()
+        self.maze = self.find_goal_point()
         self.write_maze_to_txt(filename)
          
     def get_maze_part(self, unparsed_maze, east, west, north, south):

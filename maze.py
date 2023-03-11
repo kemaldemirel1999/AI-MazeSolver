@@ -1,12 +1,14 @@
 from queue import PriorityQueue
 from txtreader import TxtReader
 from jpgreader import JpgReader
+from visualize import Visualize
+
 import os
 
 class Maze:
     
     def __init__(self):
-        filename = "maze2.jpg"
+        filename = "maze3.jpg"
         self.start_maze_solver(filename)
         
     def start_maze_solver(self,filename):
@@ -19,8 +21,7 @@ class Maze:
             filename = str(JpgReader().read_jpg_maze(filename))
             maze = TxtReader().read_txt_maze(filename)
             try:
-                #os.remove(os.getcwd()+"/maze/"+file)    
-                None
+                os.remove(os.getcwd()+"/maze/labirentler/"+filename)    
             except:
                 print("File not found")
             
@@ -29,12 +30,13 @@ class Maze:
         self.make_maze_map(maze)
         path = self.a_star_algorithm(maze)
         self.tracePath(path,maze)
-        self.write_maze_to_txt(filename, maze)
+        Visualize().visualizeTracedMaze(filename,maze)
+        #self.write_maze_to_txt(filename, maze)
         
     def write_maze_to_txt(self, filename, maze):
         filename = "trace_"+filename
         print(os.getcwd()+filename)
-        with open(os.getcwd()+"/maze/"+filename, 'w') as f:
+        with open(os.getcwd()+"/maze/cozumler/"+filename, 'w') as f:
             for line in maze:
                 for symbol in line:
                     f.write(symbol)    

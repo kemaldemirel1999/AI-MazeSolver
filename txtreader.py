@@ -6,7 +6,7 @@ class TxtReader:
         self.maze = []
     
     def read_txt_maze(self,filename):
-        path = os.getcwd()+"/maze/"
+        path = os.getcwd()+"/maze/labirentler/"
         with open(path+filename) as f:
             for line in f.readlines():
                 tmp = []

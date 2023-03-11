@@ -9,7 +9,7 @@ class JpgReader:
         self.none_symbols = ['.']
 
     def read_jpg_maze(self, filename):
-        path = os.getcwd()+"/maze/"
+        path = os.getcwd()+"/maze/labirentler/"
         pywhatkit.image_to_ascii_art(path+filename,path+'jpgmaze')
         unparsed_maze = self.read_jpg_text_file("jpgmaze.txt")
         self.parse_jpg_maze(unparsed_maze, filename)
@@ -45,6 +45,7 @@ class JpgReader:
             
         first_col_indexes = self.getGateIndexes(first_col)
         last_col_indexes = self.getGateIndexes(last_col)
+        
         
         if first_row_indexes != None:
             goal_set = False
@@ -211,11 +212,10 @@ class JpgReader:
                         self.maze[i][wallCol] = '#'
                 
                 wallCol = wallCol - 1
-
             new_maze = []
             wallCol = wallCol + 1
             for i in range(len(self.maze)):
-                new_maze.append(self.maze[i][wallCol:-1])
+                new_maze.append(self.maze[i][wallCol:len(self.maze[0])])
             return new_maze
         elif lastCol == 1:
             found = False
@@ -407,7 +407,7 @@ class JpgReader:
                     
     def write_maze_to_txt(self,filename):
         filename = filename[0:len(filename)-4] + ".txt"
-        with open(os.getcwd()+"/maze/"+filename, 'w') as f:
+        with open(os.getcwd()+"/maze/labirentler/"+filename, 'w') as f:
             for line in self.maze:
                 for symbol in line:
                     f.write(symbol)    
@@ -415,7 +415,7 @@ class JpgReader:
         
         
     def read_jpg_text_file(self, filename):
-        path = os.getcwd()+"/maze/"
+        path = os.getcwd()+"/maze/labirentler/"
         unparsed_maze = []
         with open(path+filename) as f:
             for line in f.readlines():
@@ -425,8 +425,7 @@ class JpgReader:
                         tmp.append(val)    
                 unparsed_maze.append(tmp)
         try:
-            #os.remove(path+filename)    
-            None
+            os.remove(path+filename)    
         except:
             print("File not found")
         return unparsed_maze

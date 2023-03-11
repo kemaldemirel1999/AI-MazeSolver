@@ -34,7 +34,7 @@ class Visualize:
                     draw.rectangle((col * cell_width, row * cell_height, (col + 1) * cell_width, (row + 1) * cell_height), fill=traced_color)
 
         # Save the image as a JPG file
-        image.save('coloredmaze.jpg', 'JPEG')
+        image.save('colored.jpg', 'JPEG')
 
         
     

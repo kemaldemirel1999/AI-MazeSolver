@@ -8,7 +8,7 @@ import os
 class Maze:
     
     def __init__(self):
-        filename = "maze3.jpg"
+        filename = "test.jpg"
         self.start_maze_solver(filename)
         
     def start_maze_solver(self,filename):

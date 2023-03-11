@@ -6,7 +6,7 @@ import os
 class Maze:
     
     def __init__(self):
-        filename = "test.jpg"
+        filename = "maze2.jpg"
         self.start_maze_solver(filename)
         
     def start_maze_solver(self,filename):
@@ -33,7 +33,8 @@ class Maze:
         
     def write_maze_to_txt(self, filename, maze):
         filename = "trace_"+filename
-        with open(os.getcwd()+filename, 'w') as f:
+        print(os.getcwd()+filename)
+        with open(os.getcwd()+"/maze/"+filename, 'w') as f:
             for line in maze:
                 for symbol in line:
                     f.write(symbol)    

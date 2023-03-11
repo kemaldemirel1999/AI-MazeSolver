@@ -30,19 +30,18 @@ class JpgReader:
             return 0
                 
     def find_goal_point(self):
-        #SATIRLAR
         first_row = 0
         last_row = len(self.maze)-1
         first_row_indexes = self.getGateIndexes(self.maze[first_row])
         last_row_indexes = self.getGateIndexes(self.maze[last_row])
         
         first_col = []
-        for i in range(self.maze):
-            first_col.append(self.maze[0][i])
+        for i in range(len(self.maze)):
+            first_col.append(self.maze[i][0])
         
-        last_col = []
-        for i in range(self.maze):
-            last_col.append(self.maze[len(self.maze[0]-1)][i])
+        last_col = []    
+        for i in range(len(self.maze)):
+            last_col.append(self.maze[i][len(self.maze[0])-1])
             
         first_col_indexes = self.getGateIndexes(first_col)
         last_col_indexes = self.getGateIndexes(last_col)
@@ -67,18 +66,18 @@ class JpgReader:
             goal_set = False
             for i in first_col_indexes:
                 if(goal_set == True):
-                    self.maze[0][i] = '#'
+                    self.maze[i][0] = '#'
                 else:
-                    self.maze[0][i] = 'G'  
+                    self.maze[i][0] = 'G'  
                     goal_set = True
         elif last_col_indexes != None:
             goal_set = False
             last_col_index = len(self.maze[0])-1
             for i in last_col_indexes:
                 if(goal_set == True):
-                    self.maze[last_col_index][i] = '#'
+                    self.maze[i][last_col_index] = '#'
                 else:
-                    self.maze[last_col_index][i] = 'G'  
+                    self.maze[i][last_col_index] = 'G'  
                     goal_set = True  
         return self.maze
         
@@ -137,14 +136,129 @@ class JpgReader:
                 new_maze.append(self.maze[wallRow])
                 wallRow = wallRow + 1
             return new_maze
+        ################
         elif lastRow == 1:
-            None
+            found = False
+            col_indexes = []
+            row = len(self.maze)-1
+            while(row >0):
+                line = self.maze[row]
+                if found == True:
+                    break
+                for i in range(0,len(line)):
+                    if(line[i] == '#'):
+                        col_indexes.append(i)
+                        found = True
+                row = row - 1
+            wallRow = 0
+            row = len(self.maze)-1
+            while(row > 0):
+                if(self.compareSymbols(self.maze[row]) == 0):
+                    wallRow = row
+                    break
+                row = row -1
+            start_set = False
+            while(wallRow < len(self.maze)):
+                if start_set == True:
+                    break
+                for index in col_indexes:
+                    if(self.maze[wallRow][index] == '.'):
+                        self.maze[wallRow][index] = 'S'
+                        start_set = True
+                        for i in range(len(self.maze[wallRow])):
+                            if(self.maze[wallRow][i] == '.'):
+                                self.maze[wallRow][i] = '#'
+                        break
+                wallRow = wallRow + 1
+            new_maze = []
+            i = 0
+            while(i < wallRow):
+                new_maze.append(self.maze[i])
+                i = i + 1
+            return new_maze
+        ###########################
         elif firstCol == 1:
-            None
+            found = False
+            row_indexes = []
+            for col_index in range(0, len(self.maze[0])):
+                column = []
+                for i in range(len(self.maze)):
+                    column.append(self.maze[i][col_index])
+                if(found == True):
+                    break
+                for i in range(len(column)):
+                    if column[i] == '#':
+                        row_indexes.append(i)
+                        found = True
+            wallCol = 0
+            for col_index in range(0,len(self.maze[0])):
+                whole_column = []
+                for i in range(0,len(self.maze)):
+                    whole_column.append(self.maze[i][col_index])
+                if self.compareSymbols(whole_column) == 0:
+                    wallCol = col_index
+                    break
+            start_set = False
+            while(wallCol > 0):
+                if start_set == True:
+                    break
+                for index in row_indexes:
+                    if self.maze[index][wallCol] == '.':
+                        self.maze[index][wallCol] = 'S'
+                        start_set = True
+                for i in range(len(self.maze)):
+                    if self.maze[i][wallCol] == '.':
+                        self.maze[i][wallCol] = '#'
+                
+                wallCol = wallCol - 1
+
+            new_maze = []
+            wallCol = wallCol + 1
+            for i in range(len(self.maze)):
+                new_maze.append(self.maze[i][wallCol:-1])
+            return new_maze
         elif lastCol == 1:
-            None
-            
-        #print(self.maze[lastRow])
+            found = False
+            row_indexes = []
+            col_index = len(self.maze[0]) -1
+            while(col_index>0):
+                column = []
+                for i in range(len(self.maze)):
+                    column.append(self.maze[i][col_index])
+                if(found == True):
+                    break
+                for i in range(len(column)):
+                    if column[i] == '#':
+                        row_indexes.append(i)
+                        found = True
+                col_index = col_index - 1
+            wallCol = 0
+            col_index = len(self.maze[0]) -1
+            while(col_index > 0):
+                whole_column = []
+                for i in range(0,len(self.maze)):
+                    whole_column.append(self.maze[i][col_index])
+                if self.compareSymbols(whole_column) == 0:
+                    wallCol = col_index
+                    break
+                col_index = col_index - 1
+            start_set = False
+            while(wallCol<len(self.maze[0])):
+                if(start_set == True):
+                    break
+                for index in row_indexes:
+                    if self.maze[index][wallCol] == '.':
+                        self.maze[index][wallCol] = 'S'
+                        start_set = True
+                for i in range(len(self.maze)):
+                    if self.maze[i][wallCol] == '.':
+                        self.maze[i][wallCol] = '#'
+                wallCol = wallCol + 1
+                
+            new_maze = []
+            for i in range(len(self.maze)):
+                new_maze.append(self.maze[i][0:wallCol])
+            return new_maze
     
     def compareFirstAndLastRow(self):
         lastRow = self.maze[len(self.maze)-1]

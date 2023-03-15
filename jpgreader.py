@@ -99,8 +99,6 @@ class JpgReader:
         firstRow, lastRow = self.compareFirstAndLastRow()
         firstCol, lastCol = self.compareFirstAndLastCol()
         # . fazla oluyorsa 1
-        print(firstRow,", ", lastRow)
-        print(firstCol,", ", lastCol)
         
         if firstRow == 1:
             found = False
@@ -273,10 +271,8 @@ class JpgReader:
             elif(symbol == '#'):
                 numOfArrow = numOfArrow + 1
         if(numOfDot>numOfArrow):
-            print("Son satirda . fazla")
             last = 1
         else:
-            print("Son satirda # fazla")
             last = 0
         numOfDot = 0
         numOfArrow = 0
@@ -286,10 +282,8 @@ class JpgReader:
             elif(symbol == '#'):
                 numOfArrow = numOfArrow + 1
         if(numOfDot>numOfArrow):
-            print("İlk satirda . fazla")
             first = 1
         else:
-            print("İlk satirda # fazla")
             first = 0
         return [first,last]
         

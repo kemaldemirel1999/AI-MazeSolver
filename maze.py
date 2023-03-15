@@ -7,30 +7,35 @@ import os
 
 class Maze:
     
-    def __init__(self):
-        filename = "test.jpg"
+    def __init__(self, filename):
         self.start_maze_solver(filename)
         
     def start_maze_solver(self,filename):
         self.maze_map = {}
         
+        isItJPGMaze = False
         if(filename.endswith(".txt")):
             maze = TxtReader().read_txt_maze(filename)            
         elif(filename.endswith(".jpg") or filename.endswith(".png")):
             # Image's background must be transparent.
+            givenImage = filename
             filename = str(JpgReader().read_jpg_maze(filename))
             maze = TxtReader().read_txt_maze(filename)
             try:
                 os.remove(os.getcwd()+"/maze/labirentler/"+filename)    
             except:
                 print("File not found")
+            isItJPGMaze = True
             
         self.start_point = self.find_start_point(maze)
         self.goal_point = self.find_goal_point(maze)
         self.make_maze_map(maze)
         path = self.a_star_algorithm(maze)
         self.tracePath(path,maze)
-        Visualize().visualizeTracedMaze(filename,maze)
+        if(isItJPGMaze):
+            Visualize().visualizeTracedMaze(givenImage, maze, isItJPGMaze)    
+        else:
+            Visualize().visualizeTracedMaze(None, maze, isItJPGMaze)
         #self.write_maze_to_txt(filename, maze)
         
     def write_maze_to_txt(self, filename, maze):
@@ -155,10 +160,6 @@ class Maze:
             fwdPath[aPath[cell]] = cell
             cell = aPath[cell]
         return fwdPath
-
-class Main:
-    if __name__ == '__main__':
-        Maze()
         
 
         

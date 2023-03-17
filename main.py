@@ -1,3 +1,4 @@
+import pywhatkit
 from maze import Maze
 
 class Main:
@@ -6,10 +7,11 @@ class Main:
         None
         
     if __name__ == '__main__':
-        Maze("maze2.jpg")
-        Maze("maze2.jpg")
-        Maze("test.jpg")
-        Maze("test2.png")
-        Maze("txtmaze.txt")
         
+        #Maze("maze2.jpg")
+        Maze("maze3.jpg")
+        #Maze("labirent.jpeg")
+        #Maze("test.jpg")
+        #Maze("test2.png")
+        #Maze("txtmaze.txt")
         

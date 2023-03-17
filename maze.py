@@ -16,16 +16,19 @@ class Maze:
         isItJPGMaze = False
         if(filename.endswith(".txt")):
             maze = TxtReader().read_txt_maze(filename)            
-        elif(filename.endswith(".jpg") or filename.endswith(".png")):
+        elif(filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".jpeg")):
             # Image's background must be transparent.
             givenImage = filename
             filename = str(JpgReader().read_jpg_maze(filename))
             maze = TxtReader().read_txt_maze(filename)
             try:
-                os.remove(os.getcwd()+"/maze/labirentler/"+filename)    
+                os.remove(os.getcwd()+"/labirentler/"+filename)    
             except:
                 print("File not found")
             isItJPGMaze = True
+        else:
+            print("Yanlis Dosya Input Girildi. Lütfen .txt, .jpg, .png, .jpeg uzantili labirent dosyasi giriniz.")
+            return
             
         self.start_point = self.find_start_point(maze)
         self.goal_point = self.find_goal_point(maze)
@@ -36,12 +39,12 @@ class Maze:
             Visualize().visualizeTracedMaze(givenImage, maze, isItJPGMaze)    
         else:
             Visualize().visualizeTracedMaze(None, maze, isItJPGMaze)
-        #self.write_maze_to_txt(filename, maze)
+        self.write_maze_to_txt(filename, maze)
         
     def write_maze_to_txt(self, filename, maze):
         filename = "trace_"+filename
         print(os.getcwd()+filename)
-        with open(os.getcwd()+"/maze/cozumler/"+filename, 'w') as f:
+        with open(os.getcwd()+"/cozumler/"+filename, 'w') as f:
             for line in maze:
                 for symbol in line:
                     f.write(symbol)    

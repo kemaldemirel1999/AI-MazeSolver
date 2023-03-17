@@ -12,7 +12,7 @@ class Visualize:
     
     def visualizeTracedMaze(self, givenMaze, maze, isItJPGMaze):
         if(isItJPGMaze):
-            givenImage = cv2.imread(os.getcwd()+"/maze/labirentler/"+givenMaze, 0)
+            givenImage = cv2.imread(os.getcwd()+"/labirentler/"+givenMaze, 0)
         width = 1024
         height = 1024
         wall_color = (0, 0, 0)  # black

@@ -1,5 +1,1 @@
-
-
-labirent arka plan transparent olmalı
-labirent dikdörtgen olmalı
-labirent2in başlangıç ve bitiş noktaları belirtilmeli
+İlgili labirent dosyasının ismi maze.py içerisinde "filename" değişkeni içerisine yazılır. Labirentler dosya içerisinde ilgili labirent dosyaları bulunur. Bu labirentlerin çözümü ise cozumler dosyası içerisine kaydedilmektedir.

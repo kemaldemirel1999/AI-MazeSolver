@@ -1,3 +1,4 @@
+import cv2
 import pywhatkit
 import os
 from PIL import Image
@@ -9,8 +10,19 @@ class JpgReader:
         self.none_symbols = ['.']
 
     def read_jpg_maze(self, filename):
-        path = os.getcwd()+"/maze/labirentler/"
-        pywhatkit.image_to_ascii_art(path+filename,path+'jpgmaze')
+        path = os.getcwd()+"/labirentler/"
+        
+        # Resim grayscale hale getirilir.
+        img = cv2.imread(path+filename)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        if gray.shape[0] < 1200 and gray.shape[1] < 1200:
+            upscaled_img = cv2.resize(img, (2000, 2000), interpolation=cv2.INTER_LINEAR)
+            cv2.imwrite(path+'processed_image.jpg', upscaled_img)
+        else:
+            cv2.imwrite(path+'processed_image2.jpg', gray)
+        pywhatkit.image_to_ascii_art(path+'processed_image.jpg',path+'jpgmaze')
+        os.remove(path+'processed_image.jpg')
+        
         unparsed_maze = self.read_jpg_text_file("jpgmaze.txt")
         self.parse_jpg_maze(unparsed_maze, filename)
         filename = filename[0:len(filename)-4] + ".txt"
@@ -401,7 +413,7 @@ class JpgReader:
                     
     def write_maze_to_txt(self,filename):
         filename = filename[0:len(filename)-4] + ".txt"
-        with open(os.getcwd()+"/maze/labirentler/"+filename, 'w') as f:
+        with open(os.getcwd()+"/labirentler/"+filename, 'w') as f:
             for line in self.maze:
                 for symbol in line:
                     f.write(symbol)    
@@ -409,7 +421,7 @@ class JpgReader:
         
         
     def read_jpg_text_file(self, filename):
-        path = os.getcwd()+"/maze/labirentler/"
+        path = os.getcwd()+"/labirentler/"
         unparsed_maze = []
         with open(path+filename) as f:
             for line in f.readlines():

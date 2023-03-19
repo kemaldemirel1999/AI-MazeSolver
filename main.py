@@ -1,5 +1,6 @@
 import pywhatkit
 from maze import Maze
+import os
 
 class Main:
     
@@ -7,11 +8,18 @@ class Main:
         None
         
     if __name__ == '__main__':
+
+        maze = Maze()
+        '''
+        maze.start_maze_solver("maze2.jpg")
+        maze.start_maze_solver("maze2.jpg")
+        maze.start_maze_solver("maze3.jpg")
+        maze.start_maze_solver("labirent.jpeg")
+        maze.start_maze_solver("test.jpg")
+        maze.start_maze_solver("test2.png")
+        maze.start_maze_solver("txtmaze.txt")
         
-        #Maze("maze2.jpg")
-        Maze("maze3.jpg")
-        #Maze("labirent.jpeg")
-        #Maze("test.jpg")
-        #Maze("test2.png")
-        #Maze("txtmaze.txt")
+        maze.start_maze_solver("labirentdosya.txt")
+        '''
+        maze.start_maze_solver("final.txt")
         

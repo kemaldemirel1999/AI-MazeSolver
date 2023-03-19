@@ -7,7 +7,7 @@ class JpgReader:
     
     def __init__(self):
         self.maze = []
-        self.none_symbols = ['.']
+        self.none_symbols = ['.',':']
 
     def read_jpg_maze(self, filename):
         path = os.getcwd()+"/labirentler/"
@@ -19,7 +19,7 @@ class JpgReader:
             upscaled_img = cv2.resize(img, (2000, 2000), interpolation=cv2.INTER_LINEAR)
             cv2.imwrite(path+'processed_image.jpg', upscaled_img)
         else:
-            cv2.imwrite(path+'processed_image2.jpg', gray)
+            cv2.imwrite(path+'processed_image.jpg', gray)
         pywhatkit.image_to_ascii_art(path+'processed_image.jpg',path+'jpgmaze')
         os.remove(path+'processed_image.jpg')
         
@@ -394,6 +394,14 @@ class JpgReader:
         self.clear_maze()
         self.maze = self.find_start_point()
         self.maze = self.find_goal_point()
+        with open(os.getcwd()+"/labirentler/"+"final.txt", 'w') as f:
+            i = 0
+            for line in self.maze:
+                for symbol in line:
+                    f.write(symbol) 
+                if(i < len(self.maze)-1):   
+                    f.write("\n")
+                i = i + 1
         self.write_maze_to_txt(filename)
          
     def get_maze_part(self, unparsed_maze, east, west, north, south):
@@ -414,10 +422,13 @@ class JpgReader:
     def write_maze_to_txt(self,filename):
         filename = filename[0:len(filename)-4] + ".txt"
         with open(os.getcwd()+"/labirentler/"+filename, 'w') as f:
+            i = 0
             for line in self.maze:
                 for symbol in line:
-                    f.write(symbol)    
-                f.write("\n")
+                    f.write(symbol)
+                if(i < len(self.maze)-1):     
+                    f.write("\n")
+                i = i + 1
         
         
     def read_jpg_text_file(self, filename):

@@ -3,8 +3,6 @@ from PIL import Image, ImageDraw
 import cv2
 import matplotlib.pyplot as plt
 
-
-
 class Visualize:
     
     def __init__(self):

@@ -14,7 +14,6 @@ class TxtReader:
                     if val != '\n':
                         tmp.append(val)    
                 self.maze.append(tmp)
-        
         return self.maze
         
         

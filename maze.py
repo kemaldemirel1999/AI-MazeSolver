@@ -7,17 +7,17 @@ import os
 
 class Maze:
     
-    def __init__(self, filename):
-        self.start_maze_solver(filename)
+    def __init__(self):
+        print("Hello to Kemal Demirel AI Maze Solver.")
         
     def start_maze_solver(self,filename):
         self.maze_map = {}
-        
         isItJPGMaze = False
+        givenImage = None
+        
         if(filename.endswith(".txt")):
             maze = TxtReader().read_txt_maze(filename)            
         elif(filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".jpeg")):
-            # Image's background must be transparent.
             givenImage = filename
             filename = str(JpgReader().read_jpg_maze(filename))
             maze = TxtReader().read_txt_maze(filename)
@@ -35,12 +35,15 @@ class Maze:
         self.make_maze_map(maze)
         path = self.a_star_algorithm(maze)
         self.tracePath(path,maze)
+        self.visualize_maze(givenImage, maze, isItJPGMaze)
+        self.write_maze_to_txt(filename, maze)
+        
+    def visualize_maze(self,givenImage, maze, isItJPGMaze):
         if(isItJPGMaze):
             Visualize().visualizeTracedMaze(givenImage, maze, isItJPGMaze)    
         else:
             Visualize().visualizeTracedMaze(None, maze, isItJPGMaze)
-        self.write_maze_to_txt(filename, maze)
-        
+            
     def write_maze_to_txt(self, filename, maze):
         filename = "trace_"+filename
         print(os.getcwd()+filename)
@@ -58,7 +61,7 @@ class Maze:
         
     def find_start_point(self, maze):
         for row in range(0,len(maze)):
-            for col in range(0,len(maze[0])):
+            for col in range(0,len(maze[row])):
                 if maze[row][col] == "s" or maze[row][col] == "S":
                     return (row,col)
     
@@ -105,21 +108,16 @@ class Maze:
                     else:
                         self.maze_map[row,col]['S'] = 1  
                         
-    
     def is_it_wall(self, symbol):
+        
         if symbol == '#' or symbol == '$':
             return True
-        elif symbol == '.' or symbol == '0':
-            return False
         return False
-    
     def h_diff(self,first_cell, second_cell):
         x1, y1 = first_cell
         x2, y2 = second_cell
-        return abs(x1-x2) + abs(y1-y2)
-
+        return abs(x1-x2) + abs(y1-y2)   
     
-        
     def a_star_algorithm(self,maze):
         start = self.start_point
         g_score = {cell:float('inf') for cell in self.maze_grid(maze)}
@@ -131,7 +129,6 @@ class Maze:
         open=PriorityQueue()
         open.put( (self.h_diff(start, goal), self.h_diff(start, goal), start) )
         aPath = {}
-        
         
         while not open.empty():
             currCell = open.get()[2]
@@ -156,7 +153,6 @@ class Maze:
                         f_score[childCell] = temp_f_score
                         open.put((temp_f_score, self.h_diff(childCell, goal), childCell))
                         aPath[childCell] = currCell
-
         fwdPath = {}
         cell = goal
         while cell != start:

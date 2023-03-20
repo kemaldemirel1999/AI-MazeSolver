@@ -21,5 +21,5 @@ class Main:
         
         maze.start_maze_solver("labirentdosya.txt")
         '''
-        maze.start_maze_solver("final.txt")
+        maze.start_maze_solver("start_point.jpg")
         

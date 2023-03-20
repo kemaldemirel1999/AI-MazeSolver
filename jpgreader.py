@@ -22,7 +22,6 @@ class JpgReader:
             cv2.imwrite(path+'processed_image.jpg', gray)
         pywhatkit.image_to_ascii_art(path+'processed_image.jpg',path+'jpgmaze')
         os.remove(path+'processed_image.jpg')
-        
         unparsed_maze = self.read_jpg_text_file("jpgmaze.txt")
         self.parse_jpg_maze(unparsed_maze, filename)
         filename = filename[0:len(filename)-4] + ".txt"

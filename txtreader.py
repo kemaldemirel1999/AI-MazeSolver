@@ -16,6 +16,7 @@ class TxtReader:
                         tmp.append(val)    
                 maze.append(tmp)
         return maze
+
         
         
     

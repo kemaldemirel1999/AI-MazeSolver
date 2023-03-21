@@ -19,12 +19,7 @@ class Maze:
             maze = TxtReader().read_from_txt_maze(filename)            
         elif(filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".jpeg")):
             givenImage = filename
-            filename = str(JpgReader().read_maze_from_jpg(filename))
-            maze = TxtReader().read_from_txt_maze(filename)
-            try:
-                os.remove(os.getcwd()+"/labirentler/"+filename)    
-            except:
-                print("File not found")
+            maze = str(JpgReader().read_maze_from_jpg(filename))
             isItJPGMaze = True
         else:
             print("Yanlis Dosya Input Girildi. Lütfen .txt, .jpg, .png, .jpeg uzantili labirent dosyasi giriniz.")

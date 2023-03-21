@@ -22,17 +22,17 @@ class JpgReader:
         input_image_path = self.maze_folder_path + filename
         
         # Resim üzerinde görüntü işleme uygulanır
-        Preprocess(input_image_path)
+        Preprocess().preprocess_image(input_image_path)
         
         # İlgili resim txt formatına çevrilir.
-        pywhatkit.image_to_ascii_art('processed_image.jpg','pyhwatkitMaze')
-        os.remove('processed_image.jpg')
+        pywhatkit.image_to_ascii_art('preprocessed_maze.jpg',os.getcwd()+'/labirentler/pyhwatkitMaze')
+        os.remove('preprocessed_maze.jpg')
         
         # Parse işlemi uygulanmamis labirent array olarak Txt dosyasindan okunur
         unparsed_maze = TxtReader().read_from_txt_maze("pyhwatkitMaze.txt")
-        os.remove('pyhwatkitMaze.txt')
+        os.remove(os.getcwd()+'/labirentler/pyhwatkitMaze.txt')
         # İlgili parse işlemleri uygulanir.
-        parsed_maze = self.parse_jpg_maze(unparsed_maze, filename)
+        parsed_maze = self.parse_jpg_maze(unparsed_maze)
         return parsed_maze
     
     
@@ -352,7 +352,7 @@ class JpgReader:
         
             
     
-    def parse_jpg_maze(self, unparsed_maze, filename):
+    def parse_jpg_maze(self, unparsed_maze):
         maze_indexes = []
         for line in unparsed_maze:
             left = -1
@@ -407,26 +407,18 @@ class JpgReader:
                 north = val[0]
             if val[1] > south:
                 south = val[1]    
-        self.get_maze_part(unparsed_maze, east, west, north, south)
-        self.clear_maze()
+        self.maze = self.get_maze_part(unparsed_maze, east, west, north, south)
+        self.maze = self.clear_maze()
         self.maze = self.find_start_point()
         self.maze = self.find_goal_point()
-        with open(os.getcwd()+"/labirentler/"+"final.txt", 'w') as f:
-            i = 0
-            for line in self.maze:
-                for symbol in line:
-                    f.write(symbol) 
-                if(i < len(self.maze)-1):   
-                    f.write("\n")
-                i = i + 1
         return self.maze
          
     def get_maze_part(self, unparsed_maze, east, west, north, south):
         curr_row = north
-        row = []
         while curr_row < south:
             self.maze.append(unparsed_maze[curr_row][west:east])
             curr_row = curr_row + 1
+        return self.maze
                
     
     def clear_maze(self):
@@ -436,4 +428,5 @@ class JpgReader:
                     self.maze[i][j] = '#'
                 else:
                     self.maze[i][j] = '.'
+        return self.maze
 

@@ -9,7 +9,8 @@ class JpgReader:
     
     def __init__(self):
         self.maze = []
-        self.none_symbols = ['.',':']
+        self.empty_symbols = ['.',':']
+        self.wall_symbols = ['#']
         self.maze_folder_path = os.getcwd()+"/labirentler/"
         
     '''
@@ -44,9 +45,9 @@ class JpgReader:
         numOfDot = 0
         numOfArrow = 0
         for symbol in line:
-            if(symbol == '.'):
+            if(self.empty_symbols.__contains__(symbol)):
                 numOfDot = numOfDot + 1
-            elif(symbol == '#'):
+            elif(self.wall_symbols.__contains__(symbol)):
                 numOfArrow = numOfArrow + 1
         if numOfDot>numOfArrow:
             return 1
@@ -59,8 +60,8 @@ class JpgReader:
     def find_goal_point(self):
         first_row = 0
         last_row = len(self.maze)-1
-        first_row_indexes = self.getGateIndexes(self.maze[first_row])
-        last_row_indexes = self.getGateIndexes(self.maze[last_row])
+        first_row_indexes = self.getGateIndexesInLine(self.maze[first_row])
+        last_row_indexes = self.getGateIndexesInLine(self.maze[last_row])
         
         first_col = []
         for i in range(len(self.maze)):
@@ -70,8 +71,8 @@ class JpgReader:
         for i in range(len(self.maze)):
             last_col.append(self.maze[i][len(self.maze[0])-1])
             
-        first_col_indexes = self.getGateIndexes(first_col)
-        last_col_indexes = self.getGateIndexes(last_col)
+        first_col_indexes = self.getGateIndexesInLine(first_col)
+        last_col_indexes = self.getGateIndexesInLine(last_col)
         
         
         if first_row_indexes != None:
@@ -110,11 +111,11 @@ class JpgReader:
         return self.maze
         
     
-    def getGateIndexes(self, line):
+    def getGateIndexesInLine(self, line):
         indexes = []
         i = 0
         for i in range(len(line)):
-            if line[i] == '.':
+            if self.empty_symbols.__contains__(line[i]):
                 indexes.append(i)
         if(len(indexes)>0):
             return indexes
@@ -124,8 +125,8 @@ class JpgReader:
                 
         
     def find_start_point(self):
-        firstRow, lastRow = self.compareFirstAndLastRow()
-        firstCol, lastCol = self.compareFirstAndLastCol()
+        firstRow, lastRow = self.compareFirstAndLastRow(self.maze)
+        firstCol, lastCol = self.compareFirstAndLastCol(self.maze)
         # . fazla oluyorsa 1
         
         if firstRow == 1:
@@ -136,7 +137,7 @@ class JpgReader:
                 if found == True:
                     break
                 for i in range(0,len(line)):
-                    if(line[i] == '#'):
+                    if self.wall_symbols.__contains__(line[i]):
                         col_indexes.append(i)
                         found = True
             wallRow = 0
@@ -149,11 +150,11 @@ class JpgReader:
                 if start_set == True:
                     break
                 for index in col_indexes:
-                    if(self.maze[wallRow][index] == '.'):
+                    if(self.empty_symbols.__contains__(self.maze[wallRow][index])):
                         self.maze[wallRow][index] = 'S'
                         start_set = True
                         for i in range(len(self.maze[wallRow])):
-                            if(self.maze[wallRow][i] == '.'):
+                            if(self.empty_symbols.__contains__(self.maze[wallRow][i])):
                                 self.maze[wallRow][i] = '#'
                         break
                 wallRow = wallRow -1
@@ -173,7 +174,7 @@ class JpgReader:
                 if found == True:
                     break
                 for i in range(0,len(line)):
-                    if(line[i] == '#'):
+                    if(self.wall_symbols(line[i])):
                         col_indexes.append(i)
                         found = True
                 row = row - 1
@@ -189,11 +190,11 @@ class JpgReader:
                 if start_set == True:
                     break
                 for index in col_indexes:
-                    if(self.maze[wallRow][index] == '.'):
+                    if(self.empty_symbols.__contains__(self.maze[wallRow][index])):
                         self.maze[wallRow][index] = 'S'
                         start_set = True
                         for i in range(len(self.maze[wallRow])):
-                            if(self.maze[wallRow][i] == '.'):
+                            if(self.empty_symbols.__contains__(self.maze[wallRow][i])):
                                 self.maze[wallRow][i] = '#'
                         break
                 wallRow = wallRow + 1
@@ -214,7 +215,7 @@ class JpgReader:
                 if(found == True):
                     break
                 for i in range(len(column)):
-                    if column[i] == '#':
+                    if self.wall_symbols.__contains__(column[i]):
                         row_indexes.append(i)
                         found = True
             wallCol = 0
@@ -230,11 +231,11 @@ class JpgReader:
                 if start_set == True:
                     break
                 for index in row_indexes:
-                    if self.maze[index][wallCol] == '.':
+                    if self.empty_symbols.__contains__(self.maze[index][wallCol]):
                         self.maze[index][wallCol] = 'S'
                         start_set = True
                 for i in range(len(self.maze)):
-                    if self.maze[i][wallCol] == '.':
+                    if self.empty_symbols.__contains__(self.maze[i][wallCol]):
                         self.maze[i][wallCol] = '#'
                 
                 wallCol = wallCol - 1
@@ -254,7 +255,7 @@ class JpgReader:
                 if(found == True):
                     break
                 for i in range(len(column)):
-                    if column[i] == '#':
+                    if self.wall_symbols.__contains__(column[i]):
                         row_indexes.append(i)
                         found = True
                 col_index = col_index - 1
@@ -273,11 +274,11 @@ class JpgReader:
                 if(start_set == True):
                     break
                 for index in row_indexes:
-                    if self.maze[index][wallCol] == '.':
+                    if self.empty_symbols.__contains__(self.maze[index][wallCol]):
                         self.maze[index][wallCol] = 'S'
                         start_set = True
                 for i in range(len(self.maze)):
-                    if self.maze[i][wallCol] == '.':
+                    if self.empty_symbols.__contains__(self.maze[i][wallCol]):
                         self.maze[i][wallCol] = '#'
                 wallCol = wallCol + 1
                 
@@ -285,18 +286,21 @@ class JpgReader:
             for i in range(len(self.maze)):
                 new_maze.append(self.maze[i][0:wallCol])
             return new_maze
-    
-    def compareFirstAndLastRow(self):
-        lastRow = self.maze[len(self.maze)-1]
-        firstRow = self.maze[0]
+        
+    '''
+        İlk ve son satir ayri ayri duvar ve boş alan sembol sayilari olarak karsilastirilir.
+    '''    
+    def compareFirstAndLastRow(self, maze):
+        lastRow = maze[len(self.maze)-1]
+        firstRow = maze[0]
         numOfDot = 0
         numOfArrow = 0
         first = 0
         last = 0
         for symbol in lastRow:
-            if(symbol == '.'):
+            if(self.empty_symbols.__contains__(symbol)):
                 numOfDot = numOfDot + 1
-            elif(symbol == '#'):
+            elif(self.wall_symbols.__contains__(symbol)):
                 numOfArrow = numOfArrow + 1
         if(numOfDot>numOfArrow):
             last = 1
@@ -305,49 +309,46 @@ class JpgReader:
         numOfDot = 0
         numOfArrow = 0
         for symbol in firstRow:
-            if(symbol == '.'):
+            if(self.empty_symbols.__contains__(symbol)):
                 numOfDot = numOfDot + 1
-            elif(symbol == '#'):
+            elif(self.wall_symbols.__contains__(symbol)):
                 numOfArrow = numOfArrow + 1
         if(numOfDot>numOfArrow):
             first = 1
         else:
             first = 0
-        return [first,last]
+        return first, last
         
-            
-    def compareFirstAndLastCol(self):
-        numOfDot = 0
-        numOfArrow = 0
-        firstCol = 0
-        lastCol = 0
-        for line in self.maze:
+        
+    '''
+        İlk ve son sütun ayri ayri duvar ve boş alan sembol sayilari olarak karsilastirilir.
+    '''    
+    def compareFirstAndLastCol(self, maze):
+        numOfEmptyFirstCol, numOfEmptyLastCol = 0
+        numOfWallFirstCol, numOfWallLastCol = 0
+        maze = self.maze
+        for line in maze:
             symbol = line[0]
-            if(symbol == '.'):
-                numOfDot = numOfDot + 1
-            elif(symbol == '#'):
-                numOfArrow = numOfArrow + 1
-        if(numOfDot>numOfArrow):
-            #print("İlk column . fazla")
-            firstCol = 1
-        else:
-            #print("İlk column # fazla")
-            firstCol = 0
-        numOfDot = 0
-        numOfArrow = 0
-        for line in self.maze:
+            if(self.empty_symbols.__contains__(symbol)):
+                numOfEmptyFirstCol = numOfEmptyFirstCol + 1
+            elif(self.wall_symbols.__contains__(symbol)):
+                numOfWallFirstCol = numOfWallFirstCol + 1
             symbol = line[len(line)-1]
-            if(symbol == '.'):
-                numOfDot = numOfDot + 1
-            elif(symbol == '#'):
-                numOfArrow = numOfArrow + 1
-        if(numOfDot>numOfArrow):
-            #print("Son column . fazla")
-            lastCol = 1
+            if(self.empty_symbols.__contains__(symbol)):
+                numOfEmptyLastCol = numOfEmptyLastCol + 1
+            elif(self.wall_symbols.__contains__(symbol)):
+                numOfWallLastCol = numOfWallLastCol + 1
+                
+        if(numOfEmptyFirstCol>numOfWallFirstCol and numOfEmptyLastCol>numOfWallLastCol):
+            return 1,1
+        elif(numOfEmptyFirstCol>numOfWallFirstCol and numOfEmptyLastCol<=numOfWallLastCol):
+            return 1,0
+        elif(numOfEmptyFirstCol<numOfWallFirstCol and numOfEmptyLastCol>numOfWallLastCol):
+            return 0,1
+        elif(numOfEmptyFirstCol<numOfWallFirstCol and numOfEmptyLastCol<=numOfWallLastCol):
+            return 0,0
         else:
-            #print("Son column # fazla")
-            lastCol = 0
-        return [firstCol,lastCol]
+            return 0,0
         
             
     
@@ -359,12 +360,12 @@ class JpgReader:
             wall_found = False
             for i in range(len(line)):
                 left = left + 1
-                if not( self.none_symbols.__contains__(line[left]) ):
+                if not( self.empty_symbols.__contains__(line[left]) ):
                     wall_found = True
                     break
             for i in range(len(line)):
                 right = right - 1                
-                if not( self.none_symbols.__contains__(line[right]) ):
+                if not( self.empty_symbols.__contains__(line[right]) ):
                     wall_found = True
                     break
             if wall_found:
@@ -388,12 +389,12 @@ class JpgReader:
             wall_found = False
             for i in range(len(unparsed_maze)):
                 up = up + 1
-                if not( self.none_symbols.__contains__(unparsed_maze[up][col])):
+                if not( self.empty_symbols.__contains__(unparsed_maze[up][col])):
                     wall_found = True
                     break
             for i in range(len(unparsed_maze)):
                 down = down - 1
-                if not( self.none_symbols.__contains__(unparsed_maze[down][col])):
+                if not( self.empty_symbols.__contains__(unparsed_maze[down][col])):
                     wall_found = True
                     break
             if wall_found:
@@ -427,15 +428,12 @@ class JpgReader:
             self.maze.append(unparsed_maze[curr_row][west:east])
             curr_row = curr_row + 1
                
+    
     def clear_maze(self):
         for i in range(0,len(self.maze)):
             for j in range(0,len(self.maze[i])):
-                if not(self.none_symbols.__contains__(self.maze[i][j])):
+                if not(self.empty_symbols.__contains__(self.maze[i][j])):
                     self.maze[i][j] = '#'
                 else:
                     self.maze[i][j] = '.'
-    
-        
-
-        
 

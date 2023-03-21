@@ -24,7 +24,7 @@ class JpgReader:
         numOfDot = 0
         numOfArrow = 0
         for symbol in line:
-            if(symbol == '.'):
+            if(self.none_symbols.__contains__(symbol)):
                 numOfDot = numOfDot + 1
             elif(symbol == '#'):
                 numOfArrow = numOfArrow + 1
@@ -125,11 +125,11 @@ class JpgReader:
                 if start_set == True:
                     break
                 for index in col_indexes:
-                    if(self.maze[wallRow][index] == '.'):
+                    if(self.none_symbols.__contains__(self.maze[wallRow][index])):
                         self.maze[wallRow][index] = 'S'
                         start_set = True
                         for i in range(len(self.maze[wallRow])):
-                            if(self.maze[wallRow][i] == '.'):
+                            if self.none_symbols.__contains__(self.maze[wallRow][i]):
                                 self.maze[wallRow][i] = '#'
                         break
                 wallRow = wallRow -1
@@ -165,11 +165,11 @@ class JpgReader:
                 if start_set == True:
                     break
                 for index in col_indexes:
-                    if(self.maze[wallRow][index] == '.'):
+                    if self.none_symbols.__contains__(self.maze[wallRow][index]):
                         self.maze[wallRow][index] = 'S'
                         start_set = True
                         for i in range(len(self.maze[wallRow])):
-                            if(self.maze[wallRow][i] == '.'):
+                            if self.none_symbols.__contains__(self.maze[wallRow][i] ):
                                 self.maze[wallRow][i] = '#'
                         break
                 wallRow = wallRow + 1
@@ -206,11 +206,11 @@ class JpgReader:
                 if start_set == True:
                     break
                 for index in row_indexes:
-                    if self.maze[index][wallCol] == '.':
+                    if self.none_symbols.__contains__(self.maze[index][wallCol]):
                         self.maze[index][wallCol] = 'S'
                         start_set = True
                 for i in range(len(self.maze)):
-                    if self.maze[i][wallCol] == '.':
+                    if self.none_symbols.__contains__(self.maze[i][wallCol] ):
                         self.maze[i][wallCol] = '#'
                 
                 wallCol = wallCol - 1
@@ -249,11 +249,11 @@ class JpgReader:
                 if(start_set == True):
                     break
                 for index in row_indexes:
-                    if self.maze[index][wallCol] == '.':
+                    if self.none_symbols.__contains__(self.maze[index][wallCol]):
                         self.maze[index][wallCol] = 'S'
                         start_set = True
                 for i in range(len(self.maze)):
-                    if self.maze[i][wallCol] == '.':
+                    if self.none_symbols.__contains__(self.maze[i][wallCol]):
                         self.maze[i][wallCol] = '#'
                 wallCol = wallCol + 1
                 
@@ -270,7 +270,7 @@ class JpgReader:
         first = 0
         last = 0
         for symbol in lastRow:
-            if(symbol == '.'):
+            if self.none_symbols.__contains__(symbol):
                 numOfDot = numOfDot + 1
             elif(symbol == '#'):
                 numOfArrow = numOfArrow + 1
@@ -281,7 +281,7 @@ class JpgReader:
         numOfDot = 0
         numOfArrow = 0
         for symbol in firstRow:
-            if(symbol == '.'):
+            if self.none_symbols.__contains__(symbol):
                 numOfDot = numOfDot + 1
             elif(symbol == '#'):
                 numOfArrow = numOfArrow + 1
@@ -386,14 +386,6 @@ class JpgReader:
         self.clear_maze()
         self.maze = self.find_start_point()
         self.maze = self.find_goal_point()
-        with open(os.getcwd()+"/labirentler/"+"final.txt", 'w') as f:
-            i = 0
-            for line in self.maze:
-                for symbol in line:
-                    f.write(symbol) 
-                if(i < len(self.maze)-1):   
-                    f.write("\n")
-                i = i + 1
         self.write_maze_to_txt(filename)
          
     def get_maze_part(self, unparsed_maze, east, west, north, south):

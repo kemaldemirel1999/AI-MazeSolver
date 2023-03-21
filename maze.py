@@ -33,6 +33,7 @@ class Maze:
         self.start_point = self.find_start_point(maze)
         self.goal_point = self.find_goal_point(maze)
         self.make_maze_map(maze)
+        
         path = self.a_star_algorithm(maze)
         self.tracePath(path,maze)
         self.visualize_maze(givenImage, maze, isItJPGMaze)

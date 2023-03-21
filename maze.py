@@ -16,11 +16,11 @@ class Maze:
         givenImage = None
         
         if(filename.endswith(".txt")):
-            maze = TxtReader().read_txt_maze(filename)            
+            maze = TxtReader().read_from_txt_maze(filename)            
         elif(filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".jpeg")):
             givenImage = filename
-            filename = str(JpgReader().read_jpg_maze(filename))
-            maze = TxtReader().read_txt_maze(filename)
+            filename = str(JpgReader().read_maze_from_jpg(filename))
+            maze = TxtReader().read_from_txt_maze(filename)
             try:
                 os.remove(os.getcwd()+"/labirentler/"+filename)    
             except:

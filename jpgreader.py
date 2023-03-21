@@ -2,32 +2,45 @@ import cv2
 import pywhatkit
 import os
 from PIL import Image
+from preprocess import Preprocess
+from txtreader import TxtReader
 
 class JpgReader:
     
     def __init__(self):
         self.maze = []
         self.none_symbols = ['.',':']
-
-    def read_jpg_maze(self, filename):
-        path = os.getcwd()+"/labirentler/"
+        self.maze_folder_path = os.getcwd()+"/labirentler/"
         
-        # Resim grayscale hale getirilir.
-        img = cv2.imread(path+filename)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        if gray.shape[0] < 1200 and gray.shape[1] < 1200:
-            upscaled_img = cv2.resize(img, (2000, 2000), interpolation=cv2.INTER_LINEAR)
-            cv2.imwrite(path+'processed_image.jpg', upscaled_img)
-        else:
-            cv2.imwrite(path+'processed_image.jpg', gray)
-        pywhatkit.image_to_ascii_art(path+'processed_image.jpg',path+'jpgmaze')
-        os.remove(path+'processed_image.jpg')
-        unparsed_maze = self.read_jpg_text_file("jpgmaze.txt")
-        self.parse_jpg_maze(unparsed_maze, filename)
-        filename = filename[0:len(filename)-4] + ".txt"
-        return filename
+    '''
+        İlgili JPG labirent dosyasi txt formatina çevrilir.
+        İlgili labirent parse işlemlerinden sonra return edilir.
+    '''
+    def read_maze_from_jpg(self, filename):
+        #İlgili resmin path'i
+        input_image_path = self.maze_folder_path + filename
+        
+        # Resim üzerinde görüntü işleme uygulanır
+        Preprocess(input_image_path)
+        
+        # İlgili resim txt formatına çevrilir.
+        pywhatkit.image_to_ascii_art('processed_image.jpg','pyhwatkitMaze')
+        os.remove('processed_image.jpg')
+        
+        # Parse işlemi uygulanmamis labirent array olarak Txt dosyasindan okunur
+        unparsed_maze = TxtReader().read_from_txt_maze("pyhwatkitMaze.txt")
+        os.remove('pyhwatkitMaze.txt')
+        # İlgili parse işlemleri uygulanir.
+        parsed_maze = self.parse_jpg_maze(unparsed_maze, filename)
+        return parsed_maze
     
-    def compareSymbols(self, line):
+    
+    '''
+        Bir satir veya sütündaki '.' ve '#' sayilari karşilaştirilir.
+        '.' fazla ise return 1
+        '#' fazla ise return 0
+    '''
+    def compareNumOfSymbols(self, line):
         numOfDot = 0
         numOfArrow = 0
         for symbol in line:
@@ -40,6 +53,9 @@ class JpgReader:
         else:
             return 0
                 
+    '''
+        Labirent hedef noktasi bulunur.
+    '''
     def find_goal_point(self):
         first_row = 0
         last_row = len(self.maze)-1
@@ -93,6 +109,7 @@ class JpgReader:
                     goal_set = True  
         return self.maze
         
+    
     def getGateIndexes(self, line):
         indexes = []
         i = 0
@@ -124,7 +141,7 @@ class JpgReader:
                         found = True
             wallRow = 0
             for row in range(0,len(self.maze)):
-                if(self.compareSymbols(self.maze[row]) == 0):
+                if(self.compareNumOfSymbols(self.maze[row]) == 0):
                     wallRow = row    
                     break
             start_set = False
@@ -163,7 +180,7 @@ class JpgReader:
             wallRow = 0
             row = len(self.maze)-1
             while(row > 0):
-                if(self.compareSymbols(self.maze[row]) == 0):
+                if(self.compareNumOfSymbols(self.maze[row]) == 0):
                     wallRow = row
                     break
                 row = row -1
@@ -205,7 +222,7 @@ class JpgReader:
                 whole_column = []
                 for i in range(0,len(self.maze)):
                     whole_column.append(self.maze[i][col_index])
-                if self.compareSymbols(whole_column) == 0:
+                if self.compareNumOfSymbols(whole_column) == 0:
                     wallCol = col_index
                     break
             start_set = False
@@ -247,7 +264,7 @@ class JpgReader:
                 whole_column = []
                 for i in range(0,len(self.maze)):
                     whole_column.append(self.maze[i][col_index])
-                if self.compareSymbols(whole_column) == 0:
+                if self.compareNumOfSymbols(whole_column) == 0:
                     wallCol = col_index
                     break
                 col_index = col_index - 1
@@ -401,7 +418,7 @@ class JpgReader:
                 if(i < len(self.maze)-1):   
                     f.write("\n")
                 i = i + 1
-        self.write_maze_to_txt(filename)
+        return self.maze
          
     def get_maze_part(self, unparsed_maze, east, west, north, south):
         curr_row = north
@@ -417,35 +434,7 @@ class JpgReader:
                     self.maze[i][j] = '#'
                 else:
                     self.maze[i][j] = '.'
-                    
-    def write_maze_to_txt(self,filename):
-        filename = filename[0:len(filename)-4] + ".txt"
-        with open(os.getcwd()+"/labirentler/"+filename, 'w') as f:
-            i = 0
-            for line in self.maze:
-                for symbol in line:
-                    f.write(symbol)
-                if(i < len(self.maze)-1):     
-                    f.write("\n")
-                i = i + 1
-        
-        
-    def read_jpg_text_file(self, filename):
-        path = os.getcwd()+"/labirentler/"
-        unparsed_maze = []
-        with open(path+filename) as f:
-            for line in f.readlines():
-                tmp = []
-                for val in line:
-                    if val != '\n':
-                        tmp.append(val)    
-                unparsed_maze.append(tmp)
-        try:
-            os.remove(path+filename)    
-        except:
-            print("File not found")
-        return unparsed_maze
-            
+    
         
 
         

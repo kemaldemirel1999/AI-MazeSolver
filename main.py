@@ -10,7 +10,7 @@ class Main:
     if __name__ == '__main__':
 
         maze = Maze()
-        '''
+        
         maze.start_maze_solver("maze2.jpg")
         maze.start_maze_solver("maze2.jpg")
         maze.start_maze_solver("maze3.jpg")
@@ -20,6 +20,6 @@ class Main:
         maze.start_maze_solver("txtmaze.txt")
         
         maze.start_maze_solver("labirentdosya.txt")
-        '''
-        maze.start_maze_solver("start_point.jpg")
+        
+        #maze.start_maze_solver("start_point.jpg")
         

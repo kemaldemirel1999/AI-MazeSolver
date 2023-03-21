@@ -2,6 +2,7 @@ import cv2
 import pywhatkit
 import os
 from PIL import Image
+from preprocess import Preprocess
 
 class JpgReader:
     
@@ -11,15 +12,7 @@ class JpgReader:
 
     def read_jpg_maze(self, filename):
         path = os.getcwd()+"/labirentler/"
-        
-        # Resim grayscale hale getirilir.
-        img = cv2.imread(path+filename)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        if gray.shape[0] < 1200 and gray.shape[1] < 1200:
-            upscaled_img = cv2.resize(img, (2000, 2000), interpolation=cv2.INTER_LINEAR)
-            cv2.imwrite(path+'processed_image.jpg', upscaled_img)
-        else:
-            cv2.imwrite(path+'processed_image.jpg', gray)
+        Preprocess().preprocess_image(filename)
         pywhatkit.image_to_ascii_art(path+'processed_image.jpg',path+'jpgmaze')
         os.remove(path+'processed_image.jpg')
         unparsed_maze = self.read_jpg_text_file("jpgmaze.txt")

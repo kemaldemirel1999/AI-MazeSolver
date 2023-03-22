@@ -29,10 +29,12 @@ class Maze:
         else:
             print("Yanlis Dosya Input Girildi. Lütfen .txt, .jpg, .png, .jpeg uzantili labirent dosyasi giriniz.")
             return
-            
+        
         self.start_point = self.find_start_point(maze)
         self.goal_point = self.find_goal_point(maze)
         self.make_maze_map(maze)
+        
+        #self.write_maze_to_txtTestFolder("test.txt", maze)
         
         path = self.a_star_algorithm(maze)
         self.tracePath(path,maze)
@@ -45,14 +47,26 @@ class Maze:
         else:
             Visualize().visualizeTracedMaze(None, maze, isItJPGMaze)
             
-    def write_maze_to_txt(self, filename, maze):
-        filename = "trace_"+filename
-        print(os.getcwd()+filename)
-        with open(os.getcwd()+"/cozumler/"+filename, 'w') as f:
+    def write_maze_to_txtTestFolder(self,filename, maze):
+        with open(os.getcwd()+"/test/"+filename, 'w') as f:
+            i = 0
             for line in maze:
                 for symbol in line:
                     f.write(symbol)    
-                f.write("\n")
+                if i<len(maze)-1:
+                    f.write("\n")
+                i = i + 1
+                
+    def write_maze_to_txt(self, filename, maze):
+        filename = "trace_"+filename
+        with open(os.getcwd()+"/cozumler/"+filename, 'w') as f:
+            i = 0
+            for line in maze:
+                for symbol in line:
+                    f.write(symbol)    
+                if i<len(maze)-1:
+                    f.write("\n")
+                i = i + 1
         
     def tracePath(self, path, maze):
         for val in path:
@@ -110,10 +124,10 @@ class Maze:
                         self.maze_map[row,col]['S'] = 1  
                         
     def is_it_wall(self, symbol):
-        
         if symbol == '#' or symbol == '$':
             return True
         return False
+    
     def h_diff(self,first_cell, second_cell):
         x1, y1 = first_cell
         x2, y2 = second_cell
@@ -133,6 +147,7 @@ class Maze:
         
         while not open.empty():
             currCell = open.get()[2]
+            
             for d in 'ESNW':
                 if self.maze_map[currCell][d] == True:
                     if d=='E':
@@ -151,34 +166,10 @@ class Maze:
                         g_score[childCell] = temp_g_score
                         f_score[childCell] = temp_f_score
                         open.put((temp_f_score, self.h_diff(childCell, goal), childCell))
+                        
                         aPath[childCell] = currCell
-        ####
+            
         
-        
-        if not open.empty():
-            currCell = open.get()[2]
-            if currCell == goal:
-                for d in 'ESNW':
-                    if self.maze_map[currCell][d] == True:
-                        if d=='E':
-                            childCell = (currCell[0], currCell[1]+1)
-                        if d=='W':
-                            childCell = (currCell[0], currCell[1]-1)
-                        if d=='N':
-                            childCell = (currCell[0]-1, currCell[1])
-                        if d=='S':
-                            childCell = (currCell[0]+1, currCell[1])
-
-                        temp_g_score = g_score[currCell]+1
-                        temp_f_score = temp_g_score + self.h_diff(childCell, goal)
-
-                        if temp_f_score < f_score[childCell]:
-                            g_score[childCell] = temp_g_score
-                            f_score[childCell] = temp_f_score
-                            open.put((temp_f_score, self.h_diff(childCell, goal), childCell))
-                            aPath[childCell] = currCell
-        
-        ####
         fwdPath = {}
         cell = goal
         while cell != start:

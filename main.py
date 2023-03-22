@@ -18,5 +18,5 @@ class Main:
         #maze.start_maze_solver("test2.png")
         #maze.start_maze_solver("txtmaze.txt")
         #maze.start_maze_solver("labirentdosya.txt")
-        maze.start_maze_solver("labirent20_10.png")
-        
+        #maze.start_maze_solver("labirent20_10.png")
+        #maze.start_maze_solver("test.txt")

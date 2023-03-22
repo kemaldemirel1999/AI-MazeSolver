@@ -34,7 +34,7 @@ class Maze:
         self.goal_point = self.find_goal_point(maze)
         self.make_maze_map(maze)
         
-        #self.write_maze_to_txtTestFolder("test.txt", maze)
+        self.write_maze_to_txtTestFolder("test.txt", maze)
         
         path = self.a_star_algorithm(maze)
         self.tracePath(path,maze)

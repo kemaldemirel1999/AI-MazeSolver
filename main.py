@@ -21,3 +21,4 @@ class Main:
         #maze.start_maze_solver("labirent20_10.png")
         #maze.start_maze_solver("test.txt")
         #maze.start_maze_solver("maze20_20.txt")
+        maze.start_maze_solver("—Pngtree—square plane maze clip art_5903014.jpg")

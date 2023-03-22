@@ -48,44 +48,56 @@ class JpgReader:
         last_col = []    
         for i in range(len(self.maze)):
             last_col.append(self.maze[i][len(self.maze[0])-1])
-            
+        
         first_col_indexes = self.getGateIndexes(first_col)
         last_col_indexes = self.getGateIndexes(last_col)
-        
-        
-        if first_row_indexes != None:
-            goal_set = False
-            for i in first_row_indexes:
-                if(goal_set == True):
-                    self.maze[first_row][i] = '#'
-                else:
-                    self.maze[first_row][i] = 'G'  
-                    goal_set = True 
-        elif last_row_indexes != None:
-            goal_set = False
-            for i in last_row_indexes:
-                if(goal_set == True):
-                    self.maze[last_row][i] = '#'
-                else:
-                    self.maze[last_row][i] = 'G'  
-                    goal_set = True
-        elif first_col_indexes != None:
-            goal_set = False
-            for i in first_col_indexes:
-                if(goal_set == True):
-                    self.maze[i][0] = '#'
-                else:
-                    self.maze[i][0] = 'G'  
-                    goal_set = True
+        if first_col_indexes != None:
+            for i in range(len(self.maze)):
+                if self.maze[i][0] == '.':
+                    prev_index = i - 1
+                    next_index = i + 1
+                    if prev_index > -1 and next_index<len(self.maze):
+                        if self.maze[prev_index][0] == '#':
+                            self.maze[i][0] = 'G'
+                            for i in range(len(self.maze)):
+                                if(self.maze[i][0] == '.'):
+                                    self.maze[i][0] = '#'
         elif last_col_indexes != None:
-            goal_set = False
             last_col_index = len(self.maze[0])-1
-            for i in last_col_indexes:
-                if(goal_set == True):
-                    self.maze[i][last_col_index] = '#'
-                else:
-                    self.maze[i][last_col_index] = 'G'  
-                    goal_set = True  
+            for i in range(len(self.maze)):
+                if self.maze[i][last_col_index] == '.':
+                    prev_index = i - 1
+                    next_index = i + 1
+                    if prev_index > -1 and next_index<len(self.maze):
+                        if self.maze[prev_index][last_col_index] == '#':
+                            self.maze[i][last_col_index] = 'G'
+                            for j in range(len(self.maze)):
+                                if(self.maze[j][last_col_index] == '.'):
+                                    self.maze[j][last_col_index] = '#'
+        elif first_col_indexes != None:
+            for i in range(len(self.maze[0])):
+                if self.maze[0][i] == '.':
+                    prev_index = i - 1
+                    next_index = i + 1 
+                    if prev_index > -1 and next_index<len(self.maze[0]):
+                        if self.maze[0][prev_index] == '#':
+                            self.maze[0][i] = 'G'
+                            for j in range(len(self.maze[0])):
+                                if self.maze[0][j] == '.':
+                                    self.maze[0][j] = '#'
+        elif last_row_indexes != None:
+            last_row_index = len(self.maze) -1
+            for i in range(len(self.maze[last_row_index])):
+                if self.maze[last_row_index][i] == '.':
+                    prev_index = i - 1
+                    next_index = i + 1 
+                    if prev_index > -1 and next_index<len(self.maze[last_row_index]):
+                        if self.maze[last_row_index][prev_index] == '#':
+                            self.maze[last_row_index][i] = 'G'
+                            for j in range(len(self.maze[last_row_index])):
+                                if self.maze[last_row_index][j] == '.':
+                                    self.maze[last_row_index][j] = '#'       
+                    
         return self.maze
         
     def getGateIndexes(self, line):

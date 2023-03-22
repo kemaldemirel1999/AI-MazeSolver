@@ -15,7 +15,7 @@ class JpgReader:
         test_path = os.getcwd()+"/test/"
         Preprocess().preprocess_image(filename)
         pywhatkit.image_to_ascii_art(path+'processed_image.jpg',path+'jpgmaze')
-        pywhatkit.image_to_ascii_art(path+filename,test_path+'test_untouched')
+        #pywhatkit.image_to_ascii_art(path+filename,test_path+'test_untouched')
         os.remove(path+'processed_image.jpg')
         unparsed_maze = self.read_jpg_text_file("jpgmaze.txt")
         self.parse_jpg_maze(unparsed_maze, filename)

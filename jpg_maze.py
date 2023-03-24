@@ -9,8 +9,9 @@ class JpgMaze:
     def parse_image(self, filename):
         maze_image = self.get_maze(filename)
         start_x, start_y, orientation = self.find_arrow_center(maze_image, "red")
+        print(orientation)
         end_x, end_y, orientation = self.find_arrow_center(maze_image, "green")
-
+        print(orientation)
         self.remove_arrow_from_image(maze_image, "red")
         self.remove_arrow_from_image(maze_image, "green")
         maze_gray = self.preprocess_image(maze_image)
@@ -75,7 +76,6 @@ class JpgMaze:
         return [(nx, ny) for nx, ny in candidates if
                 0 <= nx < maze.shape[1] and 0 <= ny < maze.shape[0] and maze[ny, nx] == 255]
 
-
     def preprocess_image(self, image):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         _, maze = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
@@ -115,17 +115,19 @@ class JpgMaze:
         M = cv2.moments(largest_contour)
         center_x = int(M['m10'] / M['m00'])
         center_y = int(M['m01'] / M['m00'])
-
-        # Set the start point variable to the center of the arrow
         center = (center_x, center_y)
 
-        # Calculate the bounding rectangle of the largest red contour
-        rect = cv2.minAreaRect(largest_contour)
-        aspect_ratio = rect[1][0] / rect[1][1]  # width / height
-        if aspect_ratio > 1:
+        [vx, vy, x, y] = cv2.fitLine(largest_contour, cv2.DIST_L2, 0, 0.01, 0.01)
+        angle = np.arctan2(vy, vx) * 180 / np.pi
+
+        if -45 <= angle < 45:
             orientation = 'horizontal'
-        else:
+        elif 45 <= angle < 135:
             orientation = 'vertical'
+        elif -135 <= angle < -45:
+            orientation = 'vertical'
+        else:
+            orientation = 'horizontal'
 
         return center_x, center_y, orientation
 
@@ -142,12 +144,9 @@ class JpgMaze:
 
         # Threshold the HSV image to get only red colors
         mask = cv2.inRange(hsv, lower_range, upper_range)
-
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
         # Draw white filled contours over the red arrow to remove it
         cv2.drawContours(image, contours, -1, (255, 255, 255), -1)
-
         # Save the image
         return image
 
@@ -157,7 +156,7 @@ if __name__ == '__main__':
     # jpg_maze.parse_image("maze_20_20.png")
     # jpg_maze.parse_image("test.jpg")
     jpg_maze.parse_image("new_maze.png")
-    #jpg_maze.parse_image("new_maze2.png")
+    jpg_maze.parse_image("new_maze2.png")
 
 
 

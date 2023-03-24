@@ -119,7 +119,7 @@ class JpgMaze:
 
         [vx, vy, x, y] = cv2.fitLine(largest_contour, cv2.DIST_L2, 0, 0.01, 0.01)
         angle = np.arctan2(vy, vx) * 180 / np.pi
-
+        print(angle)
         if -45 <= angle < 45:
             orientation = 'horizontal'
             direction = 'right' if center_x < maze.shape[1] // 2 else 'left'
@@ -128,7 +128,7 @@ class JpgMaze:
             direction = 'down' if center_y < maze.shape[0] // 2 else 'up'
         elif -135 <= angle < -45:
             orientation = 'vertical'
-            direction = 'up' if center_y < maze.shape[0] // 2 else 'down'
+            direction = 'up' if center_y > maze.shape[0] // 2 else 'down'
         else:
             orientation = 'horizontal'
             direction = 'left' if center_x < maze.shape[1] // 2 else 'right'
@@ -158,7 +158,7 @@ if __name__ == '__main__':
     # jpg_maze.parse_image("test2.png")
     # jpg_maze.parse_image("maze_20_20.png")
     # jpg_maze.parse_image("test.jpg")
-    # jpg_maze.parse_image("new_maze.png")
+    #jpg_maze.parse_image("new_maze.png")
     # jpg_maze.parse_image("new_maze2.png")
     # jpg_maze.parse_image("test2.png")
     jpg_maze.parse_image("yeni.jpeg")

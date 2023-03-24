@@ -1,32 +1,26 @@
-import cv2
 import pywhatkit
 import os
-from PIL import Image
 from preprocess import Preprocess
-
 class JpgReader:
-    
     def __init__(self):
         self.maze = []
         self.none_symbols = ['.',':']
-
     def read_jpg_maze(self, filename):
         path = os.getcwd()+"/labirentler/"
         test_path = os.getcwd()+"/test/"
         Preprocess().preprocess_image(filename)
         pywhatkit.image_to_ascii_art(path+'processed_image.jpg',path+'jpgmaze')
-        #pywhatkit.image_to_ascii_art(path+filename,test_path+'test_untouched')
+        pywhatkit.image_to_ascii_art(path+filename,test_path+'test_untouched')
         os.remove(path+'processed_image.jpg')
         unparsed_maze = self.read_jpg_text_file("jpgmaze.txt")
         self.parse_jpg_maze(unparsed_maze, filename)
         filename = filename[0:len(filename)-4] + ".txt"
         return filename
-    
     def compareSymbols(self, line):
         numOfDot = 0
         numOfArrow = 0
         for symbol in line:
-            if(self.none_symbols.__contains__(symbol)):
+            if self.none_symbols.__contains__(symbol):
                 numOfDot = numOfDot + 1
             elif(symbol == '#'):
                 numOfArrow = numOfArrow + 1
@@ -34,7 +28,6 @@ class JpgReader:
             return 1
         else:
             return 0
-                
     def find_goal_point(self):
         first_row = 0
         last_row = len(self.maze)-1
@@ -99,7 +92,6 @@ class JpgReader:
                                     self.maze[last_row_index][j] = '#'       
                     
         return self.maze
-        
     def getGateIndexes(self, line):
         indexes = []
         i = 0
@@ -110,12 +102,13 @@ class JpgReader:
             return indexes
         else:
             return None
-    
-                
-        
     def find_start_point(self):
         firstRow, lastRow = self.compareFirstAndLastRow()
         firstCol, lastCol = self.compareFirstAndLastCol()
+        print("first_col:",firstCol)
+        print("first_row:", firstRow)
+        print("last_col:", lastCol)
+        print("last_row:", lastRow)
         # . fazla oluyorsa 1
         
         if firstRow == 1:
@@ -141,6 +134,7 @@ class JpgReader:
                 for index in col_indexes:
                     if(self.none_symbols.__contains__(self.maze[wallRow][index])):
                         self.maze[wallRow][index] = 'S'
+                        print("set3")
                         start_set = True
                         for i in range(len(self.maze[wallRow])):
                             if self.none_symbols.__contains__(self.maze[wallRow][i]):
@@ -149,7 +143,7 @@ class JpgReader:
                 wallRow = wallRow -1
             new_maze = []
             wallRow = wallRow + 1
-            while(wallRow < len(self.maze)):
+            while wallRow < len(self.maze):
                 new_maze.append(self.maze[wallRow])
                 wallRow = wallRow + 1
             return new_maze
@@ -181,6 +175,7 @@ class JpgReader:
                 for index in col_indexes:
                     if self.none_symbols.__contains__(self.maze[wallRow][index]):
                         self.maze[wallRow][index] = 'S'
+                        print("set2")
                         start_set = True
                         for i in range(len(self.maze[wallRow])):
                             if self.none_symbols.__contains__(self.maze[wallRow][i] ):
@@ -222,6 +217,7 @@ class JpgReader:
                 for index in row_indexes:
                     if self.none_symbols.__contains__(self.maze[index][wallCol]):
                         self.maze[index][wallCol] = 'S'
+                        print("set1")
                         start_set = True
                 for i in range(len(self.maze)):
                     if self.none_symbols.__contains__(self.maze[i][wallCol] ):
@@ -265,6 +261,7 @@ class JpgReader:
                 for index in row_indexes:
                     if self.none_symbols.__contains__(self.maze[index][wallCol]):
                         self.maze[index][wallCol] = 'S'
+                        print("set4")
                         start_set = True
                 for i in range(len(self.maze)):
                     if self.none_symbols.__contains__(self.maze[i][wallCol]):
@@ -275,7 +272,6 @@ class JpgReader:
             for i in range(len(self.maze)):
                 new_maze.append(self.maze[i][0:wallCol])
             return new_maze
-    
     def compareFirstAndLastRow(self):
         lastRow = self.maze[len(self.maze)-1]
         firstRow = self.maze[0]
@@ -286,9 +282,9 @@ class JpgReader:
         for symbol in lastRow:
             if self.none_symbols.__contains__(symbol):
                 numOfDot = numOfDot + 1
-            elif(symbol == '#'):
+            elif symbol == '#':
                 numOfArrow = numOfArrow + 1
-        if(numOfDot>numOfArrow):
+        if numOfDot>numOfArrow:
             last = 1
         else:
             last = 0
@@ -304,8 +300,6 @@ class JpgReader:
         else:
             first = 0
         return [first,last]
-        
-            
     def compareFirstAndLastCol(self):
         numOfDot = 0
         numOfArrow = 0
@@ -338,9 +332,6 @@ class JpgReader:
             #print("Son column # fazla")
             lastCol = 0
         return [firstCol,lastCol]
-        
-            
-    
     def parse_jpg_maze(self, unparsed_maze, filename):
         maze_indexes = []
         for line in unparsed_maze:
@@ -401,14 +392,12 @@ class JpgReader:
         self.maze = self.find_start_point()
         self.maze = self.find_goal_point()
         self.write_maze_to_txt(filename)
-         
     def get_maze_part(self, unparsed_maze, east, west, north, south):
         curr_row = north
         row = []
         while curr_row < south:
             self.maze.append(unparsed_maze[curr_row][west:east])
             curr_row = curr_row + 1
-               
     def clear_maze(self):
         for i in range(0,len(self.maze)):
             for j in range(0,len(self.maze[i])):
@@ -416,7 +405,6 @@ class JpgReader:
                     self.maze[i][j] = '#'
                 else:
                     self.maze[i][j] = '.'
-                    
     def write_maze_to_txt(self,filename):
         filename = filename[0:len(filename)-4] + ".txt"
         with open(os.getcwd()+"/labirentler/"+filename, 'w') as f:
@@ -427,8 +415,6 @@ class JpgReader:
                 if(i < len(self.maze)-1):     
                     f.write("\n")
                 i = i + 1
-        
-        
     def read_jpg_text_file(self, filename):
         path = os.getcwd()+"/labirentler/"
         unparsed_maze = []
@@ -444,8 +430,3 @@ class JpgReader:
         except:
             print("File not found")
         return unparsed_maze
-            
-        
-
-        
-

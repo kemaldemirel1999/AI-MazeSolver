@@ -1,1 +1,5 @@
-İlgili labirent dosyasının ismi maze.py içerisinde "filename" değişkeni içerisine yazılır. Labirentler dosya içerisinde ilgili labirent dosyaları bulunur. Bu labirentlerin çözümü ise cozumler dosyası içerisine kaydedilmektedir.
+Çözülmesi istenen labirent main.py içerisinde start_maze_solver() fonksiyonuna yazılır.
+
+Labirentler 'labirentler dosyasının içerisine koyulmalıdır.'
+
+İlgili labirentlerin trace edilmiş path hali txt formatında 'trace_'+[labirent_ismi] olacak sekilde 'cozumler' dosyasi icerisinde bulunmaktadir.

@@ -10,52 +10,41 @@ class JpgMaze:
         maze_image = self.get_maze(filename)
         start_x, start_y, orientation = self.find_arrow_center(maze_image, "red")
         end_x, end_y, orientation = self.find_arrow_center(maze_image, "green")
+
         self.remove_arrow_from_image(maze_image, "red")
         self.remove_arrow_from_image(maze_image, "green")
         maze_gray = self.preprocess_image(maze_image)
         start = (start_x, start_y)
         end = (end_x, end_y)
-        maze_gray = self.shrink_maze(maze_gray)
-
+        maze_gray, start_x, start_y, end_x, end_y = self.crop_maze(maze_gray, start_x, start_y, end_x, end_y)
+        start = (start_x, start_y)
+        end = (end_x, end_y)
         self.a_star_algorithm(start, end, maze_gray)
-
         cv2.imwrite(self.trials_path + 'processed_image.jpg', maze_gray)
 
-    def shrink_maze(self, maze):
-        least_row = len(maze)
-        least_col = len(maze[0])
-        highest_row = 0
-        highest_col = 0
+    def crop_maze(self, maze, start_x, start_y, end_x, end_y):
+        up = len(maze)
+        left = len(maze[0])
+        down = 0
+        right = 0
         for row in range(len(maze)):
             for col in range(len(maze[row])):
                 if maze[row][col] == 0:
-                    if row < least_row:
-                        least_row = row
-                    if row > highest_row:
-                        highest_row = row
-                    if col < least_col:
-                        least_col = col
-                    if col > highest_col:
-                        highest_col = col
+                    if row < up:
+                        up = row
+                    if row > down:
+                        down = row
+                    if col < left:
+                        left = col
+                        start_x = start_x - left
+                        end_x = end_x - left
+                    if col > right:
+                        right = col
+        maze = maze[:, left:right+1]
+        return maze, start_x, start_y, end_x, end_y
 
-        height, width = maze.shape[:2]
-
-
-        # calculate the left and right coordinates of the crop box
-        left = least_col
-        right = highest_col
-
-        # crop the image
-        cropped_image = maze[:, left:right+1]
-        maze = cropped_image
-        # cv2.imwrite(self.trials_path + 'crop_image.jpg', cropped_image)
-        return maze
-        # print("least_row",least_row)
-        # print("highest_row", highest_row)
-        # print("least_col", least_col)
-        # print("highest_col", highest_col)
     def a_star_algorithm(self, start, end, maze_gray):
-        # Implement A* algorithm
+
         visited = set()
         queue = [(self.heuristic(start, end), 0, start, [])]
         while queue:
@@ -72,15 +61,10 @@ class JpgMaze:
                     neighbor_priority = neighbor_cost + self.heuristic(neighbor, end)
                     heapq.heappush(queue, (neighbor_priority, neighbor_cost, neighbor, path))
 
-        # Draw path on maze image
+
         for i in range(len(path) - 1):
             cv2.line(maze_gray, path[i], path[i + 1], (0, 0, 255), 20)
 
-        # Display maze image
-        cv2.imshow('Maze', maze_gray)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-    # Define heuristic function
     def heuristic(self,a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
@@ -100,6 +84,7 @@ class JpgMaze:
     def get_maze(self, filename):
         maze = cv2.imread(self.maze_path + filename)
         return maze
+
     def find_arrow_center(self, maze, arrow_color):
         # Convert image to HSV color space
         hsv = cv2.cvtColor(maze, cv2.COLOR_BGR2HSV)
@@ -142,13 +127,6 @@ class JpgMaze:
         else:
             orientation = 'vertical'
 
-        # Draw a circle at the center of the arrow on the maze image
-        # cv2.circle(maze, center, 30, (0, 0, 0), -1)
-
-        # Display the image with the arrow highlighted
-        # cv2.imshow('Maze', maze)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
         return center_x, center_y, orientation
 
     def remove_arrow_from_image(self, image, arrow_color):

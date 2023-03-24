@@ -5,14 +5,20 @@ import numpy as np
 class JpgMaze:
     def __init__(self):
         self.maze_path = os.getcwd() + "/maze_samples/"
+        self.trials_path = os.getcwd() + "/trials/"
     def parse_image(self, filename):
-        maze = self.get_maze(filename)
-        start_x, start_y, orientation = self.find_arrow_center(maze, "red")
-        goal_x, goal_y, orientation = self.find_arrow_center(maze, "green")
+        maze_image = self.get_maze(filename)
+        start_x, start_y, orientation = self.find_arrow_center(maze_image, "red")
+        goal_x, goal_y, orientation = self.find_arrow_center(maze_image, "green")
+        self.remove_arrow_from_image(maze_image, "red")
+        self.remove_arrow_from_image(maze_image, "green")
+        maze_gray = self.preprocess_image(maze_image)
+        cv2.imwrite(self.trials_path + 'processed_image.jpg', maze_gray)
     def preprocess_image(self, image):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         _, maze = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
         return maze
+
     def get_maze(self, filename):
         maze = cv2.imread(self.maze_path + filename)
         return maze
@@ -59,13 +65,35 @@ class JpgMaze:
             orientation = 'vertical'
 
         # Draw a circle at the center of the arrow on the maze image
-        cv2.circle(maze, center, 30, (0, 0, 0), -1)
+        # cv2.circle(maze, center, 30, (0, 0, 0), -1)
 
         # Display the image with the arrow highlighted
-        cv2.imshow('Maze', maze)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # cv2.imshow('Maze', maze)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
         return center_x, center_y, orientation
+
+    def remove_arrow_from_image(self, image, arrow_color):
+        # Convert image to HSV color space
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+        if arrow_color == "red":
+            lower_range = np.array([0, 100, 100])
+            upper_range = np.array([10, 255, 255])
+        elif arrow_color == "green":
+            lower_range = np.array([40, 50, 50])
+            upper_range = np.array([80, 255, 255])
+
+        # Threshold the HSV image to get only red colors
+        mask = cv2.inRange(hsv, lower_range, upper_range)
+
+        contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        # Draw white filled contours over the red arrow to remove it
+        cv2.drawContours(image, contours, -1, (255, 255, 255), -1)
+
+        # Save the image
+        return image
 
 if __name__ == '__main__':
     jpg_maze = JpgMaze()

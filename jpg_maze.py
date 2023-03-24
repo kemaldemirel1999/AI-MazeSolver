@@ -8,20 +8,20 @@ class JpgMaze:
         self.trials_path = os.getcwd() + "/trials/"
     def parse_image(self, filename):
         maze_image = self.get_maze(filename)
-        start_x, start_y, orientation = self.find_arrow_center(maze_image, "red")
-        print(orientation)
-        end_x, end_y, orientation = self.find_arrow_center(maze_image, "green")
-        print(orientation)
+        start_x, start_y, orientation, direction = self.find_arrow_center(maze_image, "red")
+        print("Start direction:",direction," orientation:",orientation)
+        end_x, end_y, orientation, direction = self.find_arrow_center(maze_image, "green")
+        print("End direction:", direction, " orientation:", orientation)
         self.remove_arrow_from_image(maze_image, "red")
         self.remove_arrow_from_image(maze_image, "green")
-        maze_gray = self.preprocess_image(maze_image)
+        maze_image = self.preprocess_image(maze_image)
         start = (start_x, start_y)
         end = (end_x, end_y)
-        maze_gray, start_x, start_y, end_x, end_y = self.crop_maze(maze_gray, start_x, start_y, end_x, end_y)
+        maze_image, start_x, start_y, end_x, end_y = self.crop_maze(maze_image, start_x, start_y, end_x, end_y)
         start = (start_x, start_y)
         end = (end_x, end_y)
-        self.a_star_algorithm(start, end, maze_gray)
-        cv2.imwrite(self.trials_path + 'processed_image.jpg', maze_gray)
+        self.a_star_algorithm(start, end, maze_image)
+        cv2.imwrite(self.trials_path + 'processed_image.jpg', maze_image)
 
     def crop_maze(self, maze, start_x, start_y, end_x, end_y):
         up = len(maze)
@@ -122,14 +122,17 @@ class JpgMaze:
 
         if -45 <= angle < 45:
             orientation = 'horizontal'
+            direction = 'right' if center_x < maze.shape[1] // 2 else 'left'
         elif 45 <= angle < 135:
             orientation = 'vertical'
+            direction = 'down' if center_y < maze.shape[0] // 2 else 'up'
         elif -135 <= angle < -45:
             orientation = 'vertical'
+            direction = 'up' if center_y < maze.shape[0] // 2 else 'down'
         else:
             orientation = 'horizontal'
-
-        return center_x, center_y, orientation
+            direction = 'left' if center_x < maze.shape[1] // 2 else 'right'
+        return center_x, center_y, orientation, direction
 
     def remove_arrow_from_image(self, image, arrow_color):
         # Convert image to HSV color space
@@ -155,8 +158,9 @@ if __name__ == '__main__':
     # jpg_maze.parse_image("test2.png")
     # jpg_maze.parse_image("maze_20_20.png")
     # jpg_maze.parse_image("test.jpg")
-    jpg_maze.parse_image("new_maze.png")
-    jpg_maze.parse_image("new_maze2.png")
-
+    # jpg_maze.parse_image("new_maze.png")
+    # jpg_maze.parse_image("new_maze2.png")
+    # jpg_maze.parse_image("test2.png")
+    jpg_maze.parse_image("yeni.jpeg")
 
 

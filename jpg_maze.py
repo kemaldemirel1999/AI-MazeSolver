@@ -8,29 +8,18 @@ class JpgMaze:
         self.trials_path = os.getcwd() + "/trials/"
     def parse_image(self, filename):
         maze_image = self.get_maze(filename)
-        start_x, start_y, orientation_start, direction_start = self.find_arrow_center(maze_image, "red")
-        print(direction_start)
-        end_x, end_y, orientation_end, direction_end = self.find_arrow_center(maze_image, "green")
-        print(direction_end)
+        maze_image, start_x, start_y, orientation_start, direction_start = self.find_arrow_center(maze_image, "red")
+        maze_image, end_x, end_y, orientation_end, direction_end = self.find_arrow_center(maze_image, "green")
         self.remove_arrow_from_image(maze_image, "red")
         self.remove_arrow_from_image(maze_image, "green")
-        cv2.imwrite(self.trials_path + 'arrow_removed_image.jpg', maze_image)
         maze_image = self.preprocess_image(maze_image)
-        start = (start_x, start_y)
-        end = (end_x, end_y)
         maze_image, start_x, start_y, end_x, end_y = self.crop_maze(
             maze_image, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end, direction_end
         )
-        cv2.circle(maze_image, start, 30, (0, 0, 0), -1)
-        cv2.circle(maze_image, end, 30, (0, 0, 0), -1)
         start = (start_x, start_y)
         end = (end_x, end_y)
-        cv2.circle(maze_image, start, 30, (0, 0, 0), -1)
-        cv2.circle(maze_image, end, 30, (0, 0, 0), -1)
-        cv2.imwrite(self.trials_path + 'removed_image.jpg', maze_image)
-
-        self.a_star_algorithm(start, end, maze_image)
-        cv2.imwrite(self.trials_path + 'processed_image.jpg', maze_image)
+        traced_maze = self.a_star_algorithm(start, end, maze_image)
+        cv2.imwrite(self.trials_path + 'result.jpg', traced_maze)
 
     def crop_maze(self, maze, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end, direction_end):
         up = len(maze)
@@ -58,12 +47,13 @@ class JpgMaze:
             maze = maze[up:down+1]
         else:
             if direction_start == "left" and direction_end == "up":
-                maze = maze[down:len(maze)]
+                maze = maze[up:len(maze)]
                 maze = maze[:, left:len(maze[0])]
                 start_x = start_x - left
                 start_y = start_y - up
                 end_x = end_x - left
                 end_y = end_y - up
+                print("last_end_y:",end_y,"  last down:",down)
             elif direction_start == "left" and direction_end == "down":
                 maze = maze[0:down + 1]
                 maze = maze[:, left:len(maze[0])]
@@ -96,9 +86,10 @@ class JpgMaze:
                     neighbor_priority = neighbor_cost + self.heuristic(neighbor, end)
                     heapq.heappush(queue, (neighbor_priority, neighbor_cost, neighbor, path))
 
+        rgb_img = cv2.cvtColor(maze_gray, cv2.COLOR_GRAY2RGB)
+        cv2.polylines(rgb_img, [np.array(path)], False, (0, 0, 255), thickness=5)
+        return rgb_img
 
-        for i in range(len(path) - 1):
-            cv2.line(maze_gray, path[i], path[i + 1], (255, 0, 0), 20)
 
     def heuristic(self,a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
@@ -144,7 +135,6 @@ class JpgMaze:
             if area > largest_contour_area:
                 largest_contour = contour
                 largest_contour_area = area
-
         # Find the center of the largest red contour (i.e. the center of the arrow)
         M = cv2.moments(largest_contour)
         center_x = int(M['m10'] / M['m00'])
@@ -153,7 +143,6 @@ class JpgMaze:
 
         [vx, vy, x, y] = cv2.fitLine(largest_contour, cv2.DIST_L2, 0, 0.01, 0.01)
         angle = np.arctan2(vy, vx) * 180 / np.pi
-        print(angle)
         if -45 <= angle < 45:
             orientation = 'horizontal'
             direction = 'right' if center_x < maze.shape[1] // 2 else 'left'
@@ -166,7 +155,40 @@ class JpgMaze:
         else:
             orientation = 'horizontal'
             direction = 'left' if center_x < maze.shape[1] // 2 else 'right'
-        return center_x, center_y, orientation, direction
+        up = len(maze)
+        left = len(maze[0])
+        down = 0
+        right = 0
+        for val in largest_contour:
+            col = val[0][0]
+            row = val[0][1]
+            if row < up:
+                up = row
+            if row > down:
+                down = row
+            if col < left:
+                left = col
+            if col > right:
+                right = col
+        if direction == "left":
+            center_x = left
+            maze = maze[:, 0:left+1]
+        elif direction == "right":
+            center_x = right
+            maze = maze[:, right:len(maze[center_x])]
+        elif direction == "up":
+            center_y = up
+            maze = maze[0:up+1]
+        elif direction == "down":
+            center_y = down
+            maze = maze[down:len(maze)]
+        print("up:",up)
+        print("down:", down)
+        print("left:", left)
+        print("right:", right)
+        print("center",center)
+
+        return maze, center_x, center_y, orientation, direction
 
     def remove_arrow_from_image(self, image, arrow_color):
         # Convert image to HSV color space
@@ -178,13 +200,9 @@ class JpgMaze:
         elif arrow_color == "green":
             lower_range = np.array([40, 50, 50])
             upper_range = np.array([80, 255, 255])
-
-        # Threshold the HSV image to get only red colors
         mask = cv2.inRange(hsv, lower_range, upper_range)
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        # Draw white filled contours over the red arrow to remove it
         cv2.drawContours(image, contours, -1, (255, 255, 255), -1)
-        # Save the image
         return image
 
 if __name__ == '__main__':

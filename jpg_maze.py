@@ -2,10 +2,13 @@ import cv2
 import heapq
 import os
 import numpy as np
+
+
 class JpgMaze:
     def __init__(self):
         self.maze_path = os.getcwd() + "/maze_samples/"
         self.trials_path = os.getcwd() + "/trials/"
+
     def parse_image(self, filename):
         maze_image = self.get_maze(filename)
         maze_image, start_x, start_y, orientation_start, direction_start = self.find_arrow_center(maze_image, "red")
@@ -14,7 +17,8 @@ class JpgMaze:
         self.remove_arrow_from_image(maze_image, "green")
         maze_image = self.preprocess_image(maze_image)
         maze_image, start_x, start_y, end_x, end_y = self.crop_maze(
-            maze_image, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end, direction_end
+            maze_image, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end,
+            direction_end
         )
         start = (start_x, start_y)
         end = (end_x, end_y)
@@ -38,6 +42,7 @@ class JpgMaze:
                     if col > right:
                         right = col
         return up, down, left, right
+
     def crop_maze(self, maze, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end, direction_end):
         up, down, left, right = self.get_least_coordinates(maze)
         if orientation_start == "vertical" and orientation_end == "vertical":
@@ -47,7 +52,7 @@ class JpgMaze:
         elif orientation_start == "horizontal" and orientation_end == "horizontal":
             start_y = start_y - up
             end_y = end_y - up
-            maze = maze[up:down+1]
+            maze = maze[up:down + 1]
         else:
             if direction_start == "left" and direction_end == "up":
                 maze = maze[up:len(maze)]
@@ -56,7 +61,6 @@ class JpgMaze:
                 start_y = start_y - up
                 end_x = end_x - left
                 end_y = end_y - up
-                print("last_end_y:",end_y,"  last down:",down)
             elif direction_start == "left" and direction_end == "down":
                 maze = maze[0:down + 1]
                 maze = maze[:, left:len(maze[0])]
@@ -70,6 +74,14 @@ class JpgMaze:
             elif direction_start == "right" and direction_end == "down":
                 maze = maze[0:down + 1]
                 maze = maze[:, 0:right + 1]
+            elif direction_start == "up" and direction_end == "left":
+                None
+            elif direction_start == "up" and direction_end == "right":
+                None
+            elif direction_start == "down" and direction_end == "left":
+                None
+            elif direction_start == "down" and direction_end == "right":
+                None
         return maze, start_x, start_y, end_x, end_y
 
     def a_star_algorithm(self, start, end, maze_gray):
@@ -93,10 +105,10 @@ class JpgMaze:
         cv2.polylines(rgb_img, [np.array(path)], False, (0, 0, 255), thickness=5)
         return rgb_img
 
-    def heuristic(self,a, b):
+    def heuristic(self, a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-    def neighbors(self,cell, maze):
+    def neighbors(self, cell, maze):
         x, y = cell
         candidates = [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
         return [(nx, ny) for nx, ny in candidates if
@@ -173,21 +185,21 @@ class JpgMaze:
                 right = col
         if direction == "left":
             center_x = left
-            maze = maze[:, 0:left+1]
+            maze = maze[:, 0:left + 1]
         elif direction == "right":
             center_x = right
             maze = maze[:, right:len(maze[center_x])]
         elif direction == "up":
             center_y = up
-            maze = maze[0:up+1]
+            maze = maze[0:up + 1]
         elif direction == "down":
             center_y = down
             maze = maze[down:len(maze)]
-        print("up:",up)
+        print("up:", up)
         print("down:", down)
         print("left:", left)
         print("right:", right)
-        print("center",center)
+        print("center", center)
 
         return maze, center_x, center_y, orientation, direction
 
@@ -206,6 +218,7 @@ class JpgMaze:
         cv2.drawContours(image, contours, -1, (255, 255, 255), -1)
         return image
 
+
 if __name__ == '__main__':
     jpg_maze = JpgMaze()
     # jpg_maze.parse_image("test2.png")
@@ -218,5 +231,3 @@ if __name__ == '__main__':
     # jpg_maze.parse_image("deneme.png")
     # jpg_maze.parse_image("deneme2.png")
     jpg_maze.parse_image("deneme3.png")
-
-

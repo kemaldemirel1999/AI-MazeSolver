@@ -21,7 +21,7 @@ class JpgMaze:
         traced_maze = self.a_star_algorithm(start, end, maze_image)
         cv2.imwrite(self.trials_path + 'result.jpg', traced_maze)
 
-    def crop_maze(self, maze, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end, direction_end):
+    def get_least_coordinates(self, maze):
         up = len(maze)
         left = len(maze[0])
         down = 0
@@ -37,6 +37,9 @@ class JpgMaze:
                         left = col
                     if col > right:
                         right = col
+        return up, down, left, right
+    def crop_maze(self, maze, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end, direction_end):
+        up, down, left, right = self.get_least_coordinates(maze)
         if orientation_start == "vertical" and orientation_end == "vertical":
             start_x = start_x - left
             end_x = end_x - left
@@ -90,11 +93,9 @@ class JpgMaze:
         cv2.polylines(rgb_img, [np.array(path)], False, (0, 0, 255), thickness=5)
         return rgb_img
 
-
     def heuristic(self,a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-    # Define neighbors function
     def neighbors(self,cell, maze):
         x, y = cell
         candidates = [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]

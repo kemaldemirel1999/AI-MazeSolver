@@ -7,6 +7,7 @@
     <list default="true" id="ca17ac02-56dc-441b-ba0b-3eabc9c67433" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jpg_maze.py" beforeDir="false" afterPath="$PROJECT_DIR$/jpg_maze.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trials/processed_image.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/trials/processed_image.jpg" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +103,7 @@
       <workItem from="1679568437224" duration="2620000" />
       <workItem from="1679580088589" duration="89000" />
       <workItem from="1679659231840" duration="10470000" />
-      <workItem from="1679693009936" duration="5847000" />
+      <workItem from="1679693009936" duration="9847000" />
     </task>
     <servers />
   </component>
@@ -113,6 +114,6 @@
     <SUITE FILE_PATH="coverage/AI_MazeSolver$jpgreader.coverage" NAME="jpgreader Coverage Results" MODIFIED="1679569428776" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/AI_MazeSolver$main.coverage" NAME="main Coverage Results" MODIFIED="1679693277395" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/AI_MazeSolver$ai_maze_solver.coverage" NAME="ai_maze_solver Coverage Results" MODIFIED="1679660222705" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/AI_MazeSolver$jpg_maze.coverage" NAME="jpg_maze Coverage Results" MODIFIED="1679698773488" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/AI_MazeSolver$jpg_maze.coverage" NAME="jpg_maze Coverage Results" MODIFIED="1679703893066" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

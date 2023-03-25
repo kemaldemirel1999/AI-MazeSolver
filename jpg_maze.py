@@ -8,22 +8,31 @@ class JpgMaze:
         self.trials_path = os.getcwd() + "/trials/"
     def parse_image(self, filename):
         maze_image = self.get_maze(filename)
-        start_x, start_y, orientation, direction = self.find_arrow_center(maze_image, "red")
-        print("Start direction:",direction," orientation:",orientation)
-        end_x, end_y, orientation, direction = self.find_arrow_center(maze_image, "green")
-        print("End direction:", direction, " orientation:", orientation)
+        start_x, start_y, orientation_start, direction_start = self.find_arrow_center(maze_image, "red")
+        print(direction_start)
+        end_x, end_y, orientation_end, direction_end = self.find_arrow_center(maze_image, "green")
+        print(direction_end)
         self.remove_arrow_from_image(maze_image, "red")
         self.remove_arrow_from_image(maze_image, "green")
+        cv2.imwrite(self.trials_path + 'arrow_removed_image.jpg', maze_image)
         maze_image = self.preprocess_image(maze_image)
         start = (start_x, start_y)
         end = (end_x, end_y)
-        maze_image, start_x, start_y, end_x, end_y = self.crop_maze(maze_image, start_x, start_y, end_x, end_y)
+        maze_image, start_x, start_y, end_x, end_y = self.crop_maze(
+            maze_image, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end, direction_end
+        )
+        cv2.circle(maze_image, start, 30, (0, 0, 0), -1)
+        cv2.circle(maze_image, end, 30, (0, 0, 0), -1)
         start = (start_x, start_y)
         end = (end_x, end_y)
+        cv2.circle(maze_image, start, 30, (0, 0, 0), -1)
+        cv2.circle(maze_image, end, 30, (0, 0, 0), -1)
+        cv2.imwrite(self.trials_path + 'removed_image.jpg', maze_image)
+
         self.a_star_algorithm(start, end, maze_image)
         cv2.imwrite(self.trials_path + 'processed_image.jpg', maze_image)
 
-    def crop_maze(self, maze, start_x, start_y, end_x, end_y):
+    def crop_maze(self, maze, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end, direction_end):
         up = len(maze)
         left = len(maze[0])
         down = 0
@@ -37,15 +46,40 @@ class JpgMaze:
                         down = row
                     if col < left:
                         left = col
-                        start_x = start_x - left
-                        end_x = end_x - left
                     if col > right:
                         right = col
-        maze = maze[:, left:right+1]
+        if orientation_start == "vertical" and orientation_end == "vertical":
+            start_x = start_x - left
+            end_x = end_x - left
+            maze = maze[:, left:right + 1]
+        elif orientation_start == "horizontal" and orientation_end == "horizontal":
+            start_y = start_y - up
+            end_y = end_y - up
+            maze = maze[up:down+1]
+        else:
+            if direction_start == "left" and direction_end == "up":
+                maze = maze[down:len(maze)]
+                maze = maze[:, left:len(maze[0])]
+                start_x = start_x - left
+                start_y = start_y - up
+                end_x = end_x - left
+                end_y = end_y - up
+            elif direction_start == "left" and direction_end == "down":
+                maze = maze[0:down + 1]
+                maze = maze[:, left:len(maze[0])]
+                start_x = start_x - left
+                end_x = end_x - left
+            elif direction_start == "right" and direction_end == "up":
+                maze = maze[0:down + 1]
+                maze = maze[:, 0:right + 1]
+                start_y = start_y - up
+                end_y = end_y - up
+            elif direction_start == "right" and direction_end == "down":
+                maze = maze[0:down + 1]
+                maze = maze[:, 0:right + 1]
         return maze, start_x, start_y, end_x, end_y
 
     def a_star_algorithm(self, start, end, maze_gray):
-
         visited = set()
         queue = [(self.heuristic(start, end), 0, start, [])]
         while queue:
@@ -64,7 +98,7 @@ class JpgMaze:
 
 
         for i in range(len(path) - 1):
-            cv2.line(maze_gray, path[i], path[i + 1], (0, 0, 255), 20)
+            cv2.line(maze_gray, path[i], path[i + 1], (255, 0, 0), 20)
 
     def heuristic(self,a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
@@ -158,9 +192,12 @@ if __name__ == '__main__':
     # jpg_maze.parse_image("test2.png")
     # jpg_maze.parse_image("maze_20_20.png")
     # jpg_maze.parse_image("test.jpg")
-    #jpg_maze.parse_image("new_maze.png")
+    # jpg_maze.parse_image("new_maze.png")
     # jpg_maze.parse_image("new_maze2.png")
     # jpg_maze.parse_image("test2.png")
-    jpg_maze.parse_image("yeni.jpeg")
+    # jpg_maze.parse_image("yeni.jpeg")
+    # jpg_maze.parse_image("deneme.png")
+    # jpg_maze.parse_image("deneme2.png")
+    jpg_maze.parse_image("deneme3.png")
 
 

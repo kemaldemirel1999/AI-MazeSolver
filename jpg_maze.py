@@ -2,12 +2,15 @@ import cv2
 import heapq
 import os
 import numpy as np
-
+from preprocess import Preprocess
 
 class JpgMaze:
     def __init__(self):
         self.maze_path = os.getcwd() + "/maze_samples/"
         self.trials_path = os.getcwd() + "/trials/"
+
+    def start_maze_solver(self, filename):
+        self.parse_image(filename)
 
     def parse_image(self, filename):
         maze_image = self.get_maze(filename)
@@ -15,16 +18,22 @@ class JpgMaze:
         maze_image, end_x, end_y, orientation_end, direction_end = self.find_arrow_center(maze_image, "green")
         self.remove_arrow_from_image(maze_image, "red")
         self.remove_arrow_from_image(maze_image, "green")
-        maze_image = self.preprocess_image(maze_image)
-        # maze_image, start_x, start_y, end_x, end_y = self.crop_maze(
-        #    maze_image, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end,
-        #    direction_end
-        # )
+        maze_image = Preprocess().preprocess_image(maze_image)
+        maze_image, start_x, start_y, end_x, end_y = self.crop_maze(
+            maze_image, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end,
+            direction_end
+        )
         start = (start_x, start_y)
         end = (end_x, end_y)
+        ## START KONTROL ET HATALI
 
         traced_maze = self.a_star_algorithm(start, end, maze_image)
-        cv2.imwrite(self.trials_path + 'result.jpg', traced_maze)
+        cv2.circle(traced_maze, start, 10, (0, 0, 255), thickness=-1)
+        cv2.circle(traced_maze, end, 10, (0, 255, 0), thickness=-1)
+        cv2.imshow("Result", traced_maze)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        #cv2.imwrite(self.trials_path + 'result.jpg', traced_maze)
 
     def get_least_coordinates(self, maze):
         up = len(maze)
@@ -90,10 +99,19 @@ class JpgMaze:
                 end_y = end_y - up
             elif (direction_start == "right" and direction_end == "down") or (
                     direction_start == "down" and direction_end == "right"):
-                # maze = maze[up:down + 1]
-                # maze = maze[:, left:right + 1]
-
-                print("xxx")
+                maze = maze[up:down + 1]
+                maze = maze[:, left:right + 1]
+                start_y = start_y - up
+                end_y = end_y - up
+                start_x = start_x - left
+                end_x = end_x - left
+                up, down, left, right = self.get_least_coordinates(maze)
+                if direction_start == "right":
+                    start_x = left + 1
+                    end_y = up + 1
+                else:
+                    end_x = left + 1
+                    start_y = up + 1
 
             up, down, left, right = self.get_least_coordinates(maze)
             print("After color: red x:", start_x, " y:", start_y)
@@ -134,10 +152,7 @@ class JpgMaze:
         return [(nx, ny) for nx, ny in candidates if
                 0 <= nx < maze.shape[1] and 0 <= ny < maze.shape[0] and maze[ny, nx] == 255]
 
-    def preprocess_image(self, image):
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        _, maze = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
-        return maze
+
 
     def get_maze(self, filename):
         maze = cv2.imread(self.maze_path + filename)
@@ -221,7 +236,7 @@ class JpgMaze:
             center_y = up
             maze = maze[0:up + 1]
 
-        elif direction == "down": # WORKS FINE
+        elif direction == "down":  # WORKS FINE
             center_y = 1
             maze = maze[down:len(maze)]
 
@@ -242,17 +257,3 @@ class JpgMaze:
         contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         cv2.drawContours(image, contours, -1, (255, 255, 255), -1)
         return image
-
-
-if __name__ == '__main__':
-    jpg_maze = JpgMaze()
-    # jpg_maze.parse_image("test2.png")
-    # jpg_maze.parse_image("maze_20_20.png")
-    # jpg_maze.parse_image("test.jpg")
-    # jpg_maze.parse_image("new_maze.png")
-    # jpg_maze.parse_image("new_maze2.png")
-    # jpg_maze.parse_image("test2.png")
-    # jpg_maze.parse_image("yeni.jpeg")
-    jpg_maze.parse_image("deneme.png")
-    # jpg_maze.parse_image("deneme2.png")
-    # jpg_maze.parse_image("deneme3.png")

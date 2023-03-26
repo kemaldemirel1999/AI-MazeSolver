@@ -1,6 +1,6 @@
 from queue import PriorityQueue
 from txtreader import TxtReader
-from jpgreader import JpgReader
+#from jpgreader import JpgReader
 from visualize import Visualize
 
 import os

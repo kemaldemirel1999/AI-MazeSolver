@@ -5,51 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca17ac02-56dc-441b-ba0b-3eabc9c67433" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/aimaze_solver.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_final.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_labirent..txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_labirent20_10.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_labirentdosya.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_maze2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_maze20_20.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_maze3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_start_point.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_test.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_test2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_txtmaze.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cozumler/trace_—Pngtree—square plane maze clip art_5903014.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/jpg_maze.py" beforeDir="false" afterPath="$PROJECT_DIR$/jpg_maze.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jpgreader.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/labirentler/labirent.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/labirentler/labirent20_10.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/labirentler/labirentdosya.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/labirentler/maze2.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/labirentler/maze20_20.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/labirentler/maze3.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/labirentler/maze_20_20.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/labirentler/test.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/labirentler/test.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/labirentler/test2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/labirentler/txtmaze.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/maze.py" beforeDir="false" afterPath="$PROJECT_DIR$/maze.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/maze_samples/deneme.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/maze_samples/deneme2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/maze_samples/deneme3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/maze_samples/new_maze.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/maze_samples/new_maze2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/maze_samples/test.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/maze_samples/test2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/maze_samples/yeni.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_untouched.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trials/arrow_removed_image.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trials/before_cropped_image.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trials/crop_image.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trials/processed_image.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/trials/result.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/trials/result.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maze_samples/altüst.png" beforeDir="false" afterPath="$PROJECT_DIR$/maze_samples/altust.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maze_samples/altüst2.png" beforeDir="false" afterPath="$PROJECT_DIR$/maze_samples/altust2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maze_samples/üstalt.png" beforeDir="false" afterPath="$PROJECT_DIR$/maze_samples/ustalt.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/maze_samples/üstalt2.png" beforeDir="false" afterPath="$PROJECT_DIR$/maze_samples/ustalt2.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +114,7 @@
       <workItem from="1679737421131" duration="6879000" />
       <workItem from="1679783357591" duration="1225000" />
       <workItem from="1679843251183" duration="4868000" />
-      <workItem from="1679851746844" duration="5209000" />
+      <workItem from="1679851746844" duration="8461000" />
     </task>
     <servers />
   </component>
@@ -161,7 +123,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/AI_MazeSolver$jpgreader.coverage" NAME="jpgreader Coverage Results" MODIFIED="1679569428776" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/AI_MazeSolver$main.coverage" NAME="main Coverage Results" MODIFIED="1679868110012" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/AI_MazeSolver$main.coverage" NAME="main Coverage Results" MODIFIED="1679871173939" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/AI_MazeSolver$ai_maze_solver.coverage" NAME="ai_maze_solver Coverage Results" MODIFIED="1679660222705" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/AI_MazeSolver$jpg_maze.coverage" NAME="jpg_maze Coverage Results" MODIFIED="1679866817855" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

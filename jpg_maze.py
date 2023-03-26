@@ -16,12 +16,13 @@ class JpgMaze:
         self.remove_arrow_from_image(maze_image, "red")
         self.remove_arrow_from_image(maze_image, "green")
         maze_image = self.preprocess_image(maze_image)
-        maze_image, start_x, start_y, end_x, end_y = self.crop_maze(
-            maze_image, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end,
-            direction_end
-        )
+        # maze_image, start_x, start_y, end_x, end_y = self.crop_maze(
+        #    maze_image, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end,
+        #    direction_end
+        # )
         start = (start_x, start_y)
         end = (end_x, end_y)
+
         traced_maze = self.a_star_algorithm(start, end, maze_image)
         cv2.imwrite(self.trials_path + 'result.jpg', traced_maze)
 
@@ -43,8 +44,13 @@ class JpgMaze:
                         right = col
         return up, down, left, right
 
-    def crop_maze(self, maze, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end, direction_end):
+    def crop_maze(self, maze, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end,
+                  direction_end):
         up, down, left, right = self.get_least_coordinates(maze)
+        print("up:", up)
+        print("down:", down)
+        print("left:", left)
+        print("right:", right)
         if orientation_start == "vertical" and orientation_end == "vertical":
             start_x = start_x - left
             end_x = end_x - left
@@ -54,34 +60,48 @@ class JpgMaze:
             end_y = end_y - up
             maze = maze[up:down + 1]
         else:
-            if direction_start == "left" and direction_end == "up":
-                maze = maze[up:len(maze)]
-                maze = maze[:, left:len(maze[0])]
+            if (direction_start == "left" and direction_end == "up") or (
+                    direction_start == "up" and direction_end == "left"):
+                maze = maze[up:down + 1]
+                maze = maze[:, left:right + 1]
                 start_x = start_x - left
                 start_y = start_y - up
                 end_x = end_x - left
                 end_y = end_y - up
-            elif direction_start == "left" and direction_end == "down":
+                up, down, left, right = self.get_least_coordinates(maze)
+                if direction_start == "up":
+                    start_y = down - 1
+                    end_x = right - 1
+                else:
+                    end_y = down - 1
+                    start_x = right - 1
+            elif (direction_start == "left" and direction_end == "down") or (
+                    direction_start == "down" and direction_end == "left"):
                 maze = maze[0:down + 1]
-                maze = maze[:, left:len(maze[0])]
+                maze = maze[:, left:len(maze)]
                 start_x = start_x - left
                 end_x = end_x - left
-            elif direction_start == "right" and direction_end == "up":
+                up, down, left, right = self.get_least_coordinates(maze)
+            elif (direction_start == "right" and direction_end == "up") or (
+                    direction_start == "up" and direction_end == "right"):
                 maze = maze[0:down + 1]
                 maze = maze[:, 0:right + 1]
                 start_y = start_y - up
                 end_y = end_y - up
-            elif direction_start == "right" and direction_end == "down":
-                maze = maze[0:down + 1]
-                maze = maze[:, 0:right + 1]
-            elif direction_start == "up" and direction_end == "left":
-                None
-            elif direction_start == "up" and direction_end == "right":
-                None
-            elif direction_start == "down" and direction_end == "left":
-                None
-            elif direction_start == "down" and direction_end == "right":
-                None
+            elif (direction_start == "right" and direction_end == "down") or (
+                    direction_start == "down" and direction_end == "right"):
+                # maze = maze[up:down + 1]
+                # maze = maze[:, left:right + 1]
+
+                print("xxx")
+
+            up, down, left, right = self.get_least_coordinates(maze)
+            print("After color: red x:", start_x, " y:", start_y)
+            print("After color: green x:", end_x, " y:", end_y)
+            print("up:", up)
+            print("down:", down)
+            print("left:", left)
+            print("right:", right)
         return maze, start_x, start_y, end_x, end_y
 
     def a_star_algorithm(self, start, end, maze_gray):
@@ -122,6 +142,24 @@ class JpgMaze:
     def get_maze(self, filename):
         maze = cv2.imread(self.maze_path + filename)
         return maze
+
+    def get_least_val_in_largest_contour(self, maze, largest_contour):
+        up = len(maze)
+        left = len(maze[0])
+        down = 0
+        right = 0
+        for val in largest_contour:
+            col = val[0][0]
+            row = val[0][1]
+            if row < up:
+                up = row
+            if row > down:
+                down = row
+            if col < left:
+                left = col
+            if col > right:
+                right = col
+        return up, left, down, right
 
     def find_arrow_center(self, maze, arrow_color):
         # Convert image to HSV color space
@@ -168,39 +206,26 @@ class JpgMaze:
         else:
             orientation = 'horizontal'
             direction = 'left' if center_x < maze.shape[1] // 2 else 'right'
-        up = len(maze)
-        left = len(maze[0])
-        down = 0
-        right = 0
-        for val in largest_contour:
-            col = val[0][0]
-            row = val[0][1]
-            if row < up:
-                up = row
-            if row > down:
-                down = row
-            if col < left:
-                left = col
-            if col > right:
-                right = col
-        if direction == "left":
+
+        up, left, down, right = self.get_least_val_in_largest_contour(maze, largest_contour)
+
+        if direction == "left":  # WORKS FINE
             center_x = left
             maze = maze[:, 0:left + 1]
-        elif direction == "right":
-            center_x = right
+
+        elif direction == "right":  # WORKS FINE
+            center_x = 1
             maze = maze[:, right:len(maze[center_x])]
-        elif direction == "up":
+
+        elif direction == "up":  # WORKS FINE
             center_y = up
             maze = maze[0:up + 1]
-        elif direction == "down":
-            center_y = down
-            maze = maze[down:len(maze)]
-        print("up:", up)
-        print("down:", down)
-        print("left:", left)
-        print("right:", right)
-        print("center", center)
 
+        elif direction == "down": # WORKS FINE
+            center_y = 1
+            maze = maze[down:len(maze)]
+
+        print("Before Color:", arrow_color, " x:", center_x, " y:", center_y)
         return maze, center_x, center_y, orientation, direction
 
     def remove_arrow_from_image(self, image, arrow_color):
@@ -228,6 +253,6 @@ if __name__ == '__main__':
     # jpg_maze.parse_image("new_maze2.png")
     # jpg_maze.parse_image("test2.png")
     # jpg_maze.parse_image("yeni.jpeg")
-    # jpg_maze.parse_image("deneme.png")
+    jpg_maze.parse_image("deneme.png")
     # jpg_maze.parse_image("deneme2.png")
-    jpg_maze.parse_image("deneme3.png")
+    # jpg_maze.parse_image("deneme3.png")

@@ -20,20 +20,18 @@ class JpgMaze:
         maze = self.remove_arrow_from_image(maze, left, right, up, down)
         maze = Preprocess().preprocess_image(maze)
 
+        '''
         cv2.circle(maze, (start_x, start_y), 10, (0,255,255), thickness=-1)
         cv2.circle(maze, (end_x, end_y), 10, (0,255,255), thickness=-1)
         cv2.imshow("Circle", maze)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-
         '''
-        maze, start_x, start_y, end_x, end_y = self.crop_maze(
-            maze, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end,
-            direction_end
-        )
+
+        maze, start_x, start_y, end_x, end_y = self.crop_maze(maze, start_x, start_y, end_x, end_y, direction_start,direction_end)
         start = (start_x, start_y)
         end = (end_x, end_y)
-        ## START KONTROL ET HATALI
+        '''
 
         traced_maze = self.a_star_algorithm(start, end, maze)
         cv2.circle(traced_maze, start, 10, (0, 0, 255), thickness=-1)
@@ -46,13 +44,30 @@ class JpgMaze:
 
 
 
-    def crop_maze(self, maze, start_x, start_y, end_x, end_y, orientation_start, direction_start, orientation_end,
-                  direction_end):
+    def crop_maze(self, maze, start_x, start_y, end_x, end_y, direction_start,direction_end):
         up, down, left, right = self.get_least_coordinates(maze)
-        print("up:", up)
-        print("down:", down)
-        print("left:", left)
-        print("right:", right)
+        maze = maze[up:down+1]
+        maze = maze[:, left:right+1]
+        up, down, left, right = self.get_least_coordinates(maze)
+        if direction_start == "left":
+            start_x = right - 1
+        elif direction_start == "right":
+            start_x = left + 1
+        elif direction_start == "up":
+            start_y = down - 1
+        elif direction_start == "down":
+            start_y = up + 1
+
+        if direction_end == "left":
+            end_x = right - 1
+        elif direction_end == "right":
+            end_x = left + 1
+        elif direction_end == "up":
+            end_y = down - 1
+        elif direction_end == "down":
+            end_y = up + 1
+
+        '''
         if orientation_start == "vertical" and orientation_end == "vertical":
             start_x = start_x - left
             end_x = end_x - left
@@ -105,14 +120,7 @@ class JpgMaze:
                 else:
                     end_x = left + 1
                     start_y = up + 1
-
-            up, down, left, right = self.get_least_coordinates(maze)
-            print("After color: red x:", start_x, " y:", start_y)
-            print("After color: green x:", end_x, " y:", end_y)
-            print("up:", up)
-            print("down:", down)
-            print("left:", left)
-            print("right:", right)
+        '''
         return maze, start_x, start_y, end_x, end_y
 
     def get_least_coordinates(self, maze):
@@ -132,7 +140,7 @@ class JpgMaze:
                     if col > right:
                         right = col
         return up, down, left, right
-    
+
     def a_star_algorithm(self, start, end, maze_gray):
         visited = set()
         queue = [(self.heuristic(start, end), 0, start, [])]

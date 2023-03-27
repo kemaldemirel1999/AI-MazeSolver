@@ -1,9 +1,12 @@
 from jpg_maze import JpgMaze
+
+
 class AIMazeSolver:
 
     def __init__(self):
         None
-    def solve_maze(self, filename, kaggle_dataset):
+
+    def solve_maze(self, filename, kaggle_dataset=False):
         if filename.endswith(".txt"):
             None
         elif filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".jpeg"):

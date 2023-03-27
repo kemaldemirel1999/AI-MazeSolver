@@ -10,7 +10,7 @@ class JpgMaze:
         self.maze_path = os.getcwd() + "/maze_samples/"
         self.trials_path = os.getcwd() + "/trials/"
         self.kaggle_path = os.getcwd() + "/kaggle_maze_dataset/rectangular_mazes_10x10/"
-        self.results_path = os.getcwd() + "/kaggle_results/"
+        self.results_path = os.getcwd() + "/results/"
         self.kaggle_results_path = os.getcwd()+"kaggle_results/"
 
     def start_maze_solver(self, filename, kaggle_dataset=False):
@@ -35,13 +35,6 @@ class JpgMaze:
             start = (start_x, start_y)
             end = (end_x, end_y)
 
-        '''
-        cv2.circle(maze, start, 10, (0, 0, 255), thickness=-1)
-        cv2.circle(maze, end, 10, (0, 255, 0), thickness=-1)
-        cv2.imshow("Result", maze)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        '''
         traced_maze = self.a_star_algorithm(start, end, maze)
 
         if not kaggle_dataset:

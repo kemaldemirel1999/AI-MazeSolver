@@ -59,7 +59,7 @@ class Maze:
                 
     def write_maze_to_txt(self, filename, maze):
         filename = "trace_"+filename
-        with open(os.getcwd()+"/cozumler/"+filename, 'w') as f:
+        with open(os.getcwd()+"/results/"+filename, 'w') as f:
             i = 0
             for line in maze:
                 for symbol in line:

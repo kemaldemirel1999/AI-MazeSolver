@@ -1,3 +1,5 @@
+https://www.mazegenerator.net/
+
 Çözülmesi istenen labirent main.py içerisinde start_maze_solver() fonksiyonuna yazılır.
 
 Labirentler 'labirentler dosyasının içerisine koyulmalıdır.'

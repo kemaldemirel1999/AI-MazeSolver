@@ -27,6 +27,12 @@ class JpgMaze:
         end = (end_x, end_y)
 
 
+        cv2.circle(maze, start, 10, (0, 0, 255), thickness=-1)
+        cv2.circle(maze, end, 10, (0, 255, 0), thickness=-1)
+        cv2.imshow("Result", maze)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        '''
         traced_maze = self.a_star_algorithm(start, end, maze)
         cv2.circle(traced_maze, start, 10, (0, 0, 255), thickness=-1)
         cv2.circle(traced_maze, end, 10, (0, 255, 0), thickness=-1)
@@ -34,7 +40,7 @@ class JpgMaze:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         # cv2.imwrite(self.trials_path + 'result.jpg', traced_maze)
-        ''''''
+        '''
 
     def crop_maze(self, maze, start_x, start_y, end_x, end_y, direction_start, direction_end):
         up, down, left, right = self.get_least_coordinates(maze)
@@ -57,16 +63,88 @@ class JpgMaze:
             end_x = end_x - left
             up, down, left, right = self.get_least_coordinates(maze)
             maze = maze[:, 0:right + 1]
+        else:
+            is_start_inside = self.is_it_inside_of_maze(maze, start_x, start_y)
+            is_end_inside = self.is_it_inside_of_maze(maze, end_x, end_y)
+            if is_start_inside and is_end_inside:
+                print("both inside")
+                maze = maze[:, left:right + 1]
+                start_x = start_x - left
+                end_x = end_x - left
+                maze = maze[up:down + 1]
+                start_y = start_y - up
+                end_y = end_y - up
+            elif is_start_inside:
+                print("Start inside")
+                maze = maze[:, left:right + 1]
+                start_x = start_x - left
+                end_x = end_x - left
+            elif is_end_inside:
+                print("End inside")
+                maze = maze[up:down + 1]
+                start_y = start_y - up
+                end_y = end_y - up
+            else:
+                print("both outside")
+                if direction_start == "left" and direction_end =="up":
+                    maze, start_x, start_y, end_x, end_y = self.crop_south(maze, start_x, start_y, end_x, end_y, direction_start, direction_end, False)
+                elif direction_start == "left" and direction_end == "down":
+                    None
+                elif direction_start == "right" and direction_end == "up":
+                    maze, start_x, start_y, end_x, end_y = self.crop_south(maze, start_x, start_y, end_x, end_y, direction_start, direction_end, False)
+                elif direction_start == "right" and direction_end == "down":
+                    None
+                elif direction_start == "up" and direction_end == "left":
+                    maze, start_x, start_y, end_x, end_y = self.crop_south(maze, start_x, start_y, end_x, end_y, direction_start, direction_end, True)
+                elif direction_start == "up" and direction_end == "right":
+                    maze, start_x, start_y, end_x, end_y = self.crop_south(maze, start_x, start_y, end_x, end_y, direction_start, direction_end, True)
+                elif direction_start == "down" and direction_end == "left":
+                    None
+                elif direction_start == "down" and direction_end == "right":
+                    None
 
-        if direction_start == "left" and direction_end == "up":
-            None
-        elif direction_start == "left" and direction_end == "down":
-            None
-        elif direction_start == "right" and direction_end == "up":
-            None
-        elif direction_start == "right" and direction_end == "down":
-            None
         return maze, start_x, start_y, end_x, end_y
+
+    def crop_south(self, maze, start_x, start_y, end_x, end_y, direction_start, direction_end, isItStart):
+        up, down, left, right = self.get_least_coordinates(maze)
+        if direction_start == "up" and isItStart:
+            maze = maze[0:down + 1]
+            diff_y = len(maze) - down
+            end_y = end_y - diff_y
+            up, down, left, right = self.get_least_coordinates(maze)
+            start_y = down - 1
+        elif direction_end == "up" and not isItStart:
+            maze = maze[0:down + 1]
+            diff_y = len(maze) - down
+            start_y = start_y - diff_y
+            up, down, left, right = self.get_least_coordinates(maze)
+            end_y = down - 1
+        else:
+            print("Wrong Crop South Input")
+        return maze, start_x, start_y, end_x, end_y
+    def is_it_inside_of_maze(self, maze, x_coord, y_coord):
+        up = len(maze)
+        left = len(maze[0])
+        down = 0
+        right = 0
+        maze_row = maze[y_coord]
+        maze_col = maze[:, x_coord]
+        for col in range(len(maze_row)):
+            if maze_row[col] == 0:
+                if col < left:
+                    left = col
+                if col > right:
+                    right = col
+        for row in range(len(maze_col)):
+            if maze_col[row] == 0:
+                if row < up:
+                    up = row
+                if row > down:
+                    down = row
+        if left < x_coord < right and down > y_coord > up:
+            return True
+        else:
+            return False
 
     def get_least_coordinates(self, maze):
         up = len(maze)

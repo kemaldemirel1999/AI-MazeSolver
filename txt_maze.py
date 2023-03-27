@@ -1,73 +1,37 @@
 from queue import PriorityQueue
-from txtreader import TxtReader
-#from jpgreader import JpgReader
 from visualize import Visualize
-
 import os
+import cv2
 
-class Maze:
+class TxtMaze:
     
     def __init__(self):
-        print("Hello to Kemal Demirel AI Maze Solver.")
+        self.maze_path = os.getcwd() + "/maze_samples/"
+        self.results_path = os.getcwd() + "/results/"
         
     def start_maze_solver(self,filename):
         self.maze_map = {}
-        isItJPGMaze = False
-        givenImage = None
-        
-        if(filename.endswith(".txt")):
-            maze = TxtReader().read_txt_maze(filename)            
-        elif(filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".jpeg")):
-            givenImage = filename
-            filename = str(JpgReader().read_jpg_maze(filename))
-            maze = TxtReader().read_txt_maze(filename)
-            try:
-                os.remove(os.getcwd()+"/labirentler/"+filename)    
-            except:
-                print("File not found")
-            isItJPGMaze = True
-        else:
-            print("Yanlis Dosya Input Girildi. Lütfen .txt, .jpg, .png, .jpeg uzantili labirent dosyasi giriniz.")
-            return
-        
+        maze = self.read_txt_maze(filename)
         self.start_point = self.find_start_point(maze)
         self.goal_point = self.find_goal_point(maze)
         self.make_maze_map(maze)
-        
-        self.write_maze_to_txtTestFolder("test.txt", maze)
-        
         path = self.a_star_algorithm(maze)
         self.tracePath(path,maze)
-        self.visualize_maze(givenImage, maze, isItJPGMaze)
-        self.write_maze_to_txt(filename, maze)
-        
-    def visualize_maze(self,givenImage, maze, isItJPGMaze):
-        if(isItJPGMaze):
-            Visualize().visualizeTracedMaze(givenImage, maze, isItJPGMaze)    
-        else:
-            Visualize().visualizeTracedMaze(None, maze, isItJPGMaze)
-            
-    def write_maze_to_txtTestFolder(self,filename, maze):
-        with open(os.getcwd()+"/test/"+filename, 'w') as f:
-            i = 0
-            for line in maze:
-                for symbol in line:
-                    f.write(symbol)    
-                if i<len(maze)-1:
-                    f.write("\n")
-                i = i + 1
-                
-    def write_maze_to_txt(self, filename, maze):
-        filename = "trace_"+filename
-        with open(os.getcwd()+"/results/"+filename, 'w') as f:
-            i = 0
-            for line in maze:
-                for symbol in line:
-                    f.write(symbol)    
-                if i<len(maze)-1:
-                    f.write("\n")
-                i = i + 1
-        
+        image = Visualize().visualize_traced_maze(maze)
+        filename = filename[0:len(filename)-4]+".jpg"
+        image.save(self.results_path + filename)
+
+    def read_txt_maze(self, filename):
+        maze = []
+        with open(self.maze_path + filename) as f:
+            for line in f.readlines():
+                tmp = []
+                for val in line:
+                    if val != '\n':
+                        tmp.append(val)
+                maze.append(tmp)
+        return maze
+
     def tracePath(self, path, maze):
         for val in path:
             if(path[val] == self.goal_point):

@@ -8,9 +8,7 @@ class Visualize:
     def __init__(self):
         None
     
-    def visualizeTracedMaze(self, givenMaze, maze, isItJPGMaze):
-        if(isItJPGMaze):
-            givenImage = cv2.imread(os.getcwd()+"/labirentler/"+givenMaze, 0)
+    def visualize_traced_maze(self, maze):
         width = 1024
         height = 1024
         wall_color = (0, 0, 0)  # black
@@ -34,19 +32,7 @@ class Visualize:
                     draw.rectangle((col * cell_width, row * cell_height, (col + 1) * cell_width, (row + 1) * cell_height), fill=path_color)
                 else:
                     draw.rectangle((col * cell_width, row * cell_height, (col + 1) * cell_width, (row + 1) * cell_height), fill=traced_color)
-                    
-        if(isItJPGMaze):
-            fig, axs = plt.subplots(1, 2, figsize=(12, 8))
-            axs[0].imshow(givenImage, cmap='gray')
-            axs[0].set_title('Given Maze')
-
-            axs[1].imshow(image, cmap='gray')
-            axs[1].set_title('(Start:Green, Goal:Blue) Maze with traced to goal point')
-
-            plt.show()
-        else:
-            plt.imshow(image, cmap='gray')
-            plt.show()
+        return image
 
         
     

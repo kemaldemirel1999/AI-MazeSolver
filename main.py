@@ -1,6 +1,5 @@
-import os
 
-from aimaze_solver import AIMazeSolver
+from aimaze import AIMazeSolver
 
 
 class Main:
@@ -11,8 +10,15 @@ class Main:
     if __name__ == '__main__':
         print("Hello Kemal Demirel AI Maze Solver from images and txt files.")
         maze = AIMazeSolver()
+        ''' Txt Mazes '''
+        maze.solve_maze("txtmaze.txt")
+        maze.solve_maze("labirentdosya.txt")
+        maze.solve_maze("maze20_20.txt")
+        maze.solve_maze("test.txt")
 
-        '''Horizantal or Vertical Mazes'''
+
+        '''
+        # Horizantal or Vertical Mazes
         maze.solve_maze("solsag.jpeg")
         maze.solve_maze("sagsol.png")
         maze.solve_maze("altust.png")
@@ -29,12 +35,12 @@ class Main:
         maze.solve_maze("altust4.png")
         maze.solve_maze("altust3.png")
 
-        '''Mixed Mazes'''
+        # Mixed Mazes
         maze.solve_maze("leftdown.png")
         maze.solve_maze("inside_downleft.png")
         maze.solve_maze("mixed_leftup.png")
-
-        '''Kaggle Dataset Mazes'''
+        '''
+        # Kaggle Dataset Mazes
         '''
         kaggle_path = os.getcwd() + "/kaggle_maze_dataset/rectangular_mazes_10x10"
         files = os.listdir(kaggle_path)

@@ -4,6 +4,7 @@ import os
 import numpy as np
 from preprocess import Preprocess
 
+
 class JpgMaze:
     def __init__(self):
         self.maze_path = os.getcwd() + "/maze_samples/"
@@ -20,11 +21,11 @@ class JpgMaze:
         maze = self.remove_arrow_from_image(maze, left, right, up, down)
         maze = Preprocess().preprocess_image(maze)
 
-        maze, start_x, start_y, end_x, end_y = self.crop_maze(maze, start_x, start_y, end_x, end_y, direction_start, direction_end)
+        maze, start_x, start_y, end_x, end_y = self.crop_maze(maze, start_x, start_y, end_x, end_y, direction_start,
+                                                              direction_end)
         start = (start_x, start_y)
         end = (end_x, end_y)
 
-        '''
 
         traced_maze = self.a_star_algorithm(start, end, maze)
         cv2.circle(traced_maze, start, 10, (0, 0, 255), thickness=-1)
@@ -32,16 +33,16 @@ class JpgMaze:
         cv2.imshow("Result", traced_maze)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        #cv2.imwrite(self.trials_path + 'result.jpg', traced_maze)
-        '''
+        # cv2.imwrite(self.trials_path + 'result.jpg', traced_maze)
+        ''''''
 
-
-
-    def crop_maze(self, maze, start_x, start_y, end_x, end_y, direction_start,direction_end):
+    def crop_maze(self, maze, start_x, start_y, end_x, end_y, direction_start, direction_end):
         up, down, left, right = self.get_least_coordinates(maze)
-        if (direction_start == "left" and direction_end == "right")\
+
+        if (direction_start == "left" and direction_end == "right") \
                 or (direction_end == "left" and direction_start == "right") \
-                or (direction_end == direction_start):
+                or (direction_end == "left" and direction_start == "left")\
+                or (direction_end == "right" and direction_start == "right"):
             maze = maze[up:len(maze)]
             start_y = start_y - up
             end_y = end_y - up
@@ -49,12 +50,14 @@ class JpgMaze:
             maze = maze[0:down + 1]
         elif (direction_start == "up" and direction_end == "down") \
                 or (direction_end == "up" and direction_start == "down") \
-                or (direction_end == direction_start):
-            maze = maze[:, left:len(maze[0])+1]
+                or (direction_end == "up" and direction_start == "up")\
+                or (direction_end == "down" and direction_start == "down"):
+            maze = maze[:, left:len(maze[0]) + 1]
             start_x = start_x - left
             end_x = end_x - left
             up, down, left, right = self.get_least_coordinates(maze)
-            maze = maze[:, 0:right+1]
+            maze = maze[:, 0:right + 1]
+
         if direction_start == "left" and direction_end == "up":
             None
         elif direction_start == "left" and direction_end == "down":

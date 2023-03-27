@@ -23,13 +23,7 @@ class JpgMaze:
         maze, start_x, start_y, end_x, end_y = self.crop_maze(maze, start_x, start_y, end_x, end_y, direction_start, direction_end)
         start = (start_x, start_y)
         end = (end_x, end_y)
-        '''
-        cv2.circle(maze, (start_x, start_y), 10, (0, 0, 255), thickness=-1)
-        cv2.circle(maze, (end_x, end_y), 10, (0, 0, 255), thickness=-1)
-        cv2.imshow("Circle", maze)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        '''
+
         '''
 
         traced_maze = self.a_star_algorithm(start, end, maze)
@@ -45,25 +39,6 @@ class JpgMaze:
 
     def crop_maze(self, maze, start_x, start_y, end_x, end_y, direction_start,direction_end):
         up, down, left, right = self.get_least_coordinates(maze)
-        '''
-        cv2.circle(maze, (start_x, start_y), 30, (0, 0, 255), thickness=-1)
-        cv2.circle(maze, (end_x, end_y), 30, (0, 0, 255), thickness=-1)
-        cv2.imshow("Circle", maze)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        '''
-
-        '''
-        maze = maze[up:down+1]
-        maze = maze[:, left:right+1]
-        '''
-
-        up, down, left, right = self.get_least_coordinates(maze)
-        print("before up:",up)
-        print("before down:", down)
-        print("before left:", left)
-        print("before right:", right)
-
         if (direction_start == "left" and direction_end == "right")\
                 or (direction_end == "left" and direction_start == "right") \
                 or (direction_end == direction_start):
@@ -80,14 +55,14 @@ class JpgMaze:
             end_x = end_x - left
             up, down, left, right = self.get_least_coordinates(maze)
             maze = maze[:, 0:right+1]
-
-
-
-        print("Start: x:",start_x," y:",start_y)
-        print("End: x:", end_x, " y:", end_y)
-        print("*******")
-
-
+        if direction_start == "left" and direction_end == "up":
+            None
+        elif direction_start == "left" and direction_end == "down":
+            None
+        elif direction_start == "right" and direction_end == "up":
+            None
+        elif direction_start == "right" and direction_end == "down":
+            None
         return maze, start_x, start_y, end_x, end_y
 
     def get_least_coordinates(self, maze):

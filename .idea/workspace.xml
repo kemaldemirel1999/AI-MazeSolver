@@ -7,7 +7,6 @@
     <list default="true" id="ca17ac02-56dc-441b-ba0b-3eabc9c67433" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jpg_maze.py" beforeDir="false" afterPath="$PROJECT_DIR$/jpg_maze.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +109,7 @@
       <workItem from="1679737421131" duration="6879000" />
       <workItem from="1679783357591" duration="1225000" />
       <workItem from="1679843251183" duration="4868000" />
-      <workItem from="1679851746844" duration="13761000" />
+      <workItem from="1679851746844" duration="14011000" />
     </task>
     <servers />
   </component>

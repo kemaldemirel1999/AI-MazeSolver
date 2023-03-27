@@ -9,24 +9,33 @@ class JpgMaze:
     def __init__(self):
         self.maze_path = os.getcwd() + "/maze_samples/"
         self.trials_path = os.getcwd() + "/trials/"
+        self.kaggle_path = os.getcwd() + "/kaggle_maze_dataset/rectangular_mazes_10x10/"
+        self.results_path = os.getcwd() + "/kaggle_results/"
+        self.kaggle_results_path = os.getcwd()+"kaggle_results/"
 
-    def start_maze_solver(self, filename):
-        self.parse_image(filename)
+    def start_maze_solver(self, filename, kaggle_dataset=False):
+        self.parse_image(filename, kaggle_dataset)
 
-    def parse_image(self, filename):
-        maze = self.get_maze(filename)
-        maze, start_x, start_y, direction_start, left, right, up, down = self.find_arrow_coordinates(maze, "red")
-        maze = self.remove_arrow_from_image(maze, left, right, up, down)
-        maze, end_x, end_y, direction_end, left, right, up, down = self.find_arrow_coordinates(maze, "green")
-        maze = self.remove_arrow_from_image(maze, left, right, up, down)
-        maze = Preprocess().preprocess_image(maze)
+    def parse_image(self, filename, kaggle_dataset):
+        maze = self.get_maze(filename, kaggle_dataset)
+        if self.includes_arrow(maze, "red") and self.includes_arrow(maze, "green"):
+            maze, start_x, start_y, direction_start, left, right, up, down = self.find_arrow_coordinates(maze, "red")
+            maze = self.remove_arrow_from_image(maze, left, right, up, down)
+            maze, end_x, end_y, direction_end, left, right, up, down = self.find_arrow_coordinates(maze, "green")
+            maze = self.remove_arrow_from_image(maze, left, right, up, down)
+            maze = Preprocess().preprocess_image(maze)
 
-        maze, start_x, start_y, end_x, end_y = self.crop_maze(maze, start_x, start_y, end_x, end_y, direction_start,
-                                                              direction_end)
-        start = (start_x, start_y)
-        end = (end_x, end_y)
+            maze, start_x, start_y, end_x, end_y = self.crop_maze(maze, start_x, start_y, end_x, end_y, direction_start,
+                                                                  direction_end)
+            start = (start_x, start_y)
+            end = (end_x, end_y)
+        else:
+            maze = Preprocess().preprocess_image(maze)
+            start_x, start_y, end_x, end_y = self.find_start_end_points(maze)
+            start = (start_x, start_y)
+            end = (end_x, end_y)
 
-
+        '''
         cv2.circle(maze, start, 10, (0, 0, 255), thickness=-1)
         cv2.circle(maze, end, 10, (0, 255, 0), thickness=-1)
         cv2.imshow("Result", maze)
@@ -34,14 +43,92 @@ class JpgMaze:
         cv2.destroyAllWindows()
         '''
         traced_maze = self.a_star_algorithm(start, end, maze)
-        cv2.circle(traced_maze, start, 10, (0, 0, 255), thickness=-1)
-        cv2.circle(traced_maze, end, 10, (0, 255, 0), thickness=-1)
-        cv2.imshow("Result", traced_maze)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        # cv2.imwrite(self.trials_path + 'result.jpg', traced_maze)
-        '''
 
+        if not kaggle_dataset:
+            cv2.imwrite(self.results_path + filename, traced_maze)
+        else:
+            cv2.imwrite(self.kaggle_results_path + filename, traced_maze)
+
+
+
+    def find_start_end_points(self, maze):
+        up, down, left, right = self.get_least_coordinates(maze)
+        first_col = maze[:, 0]
+        last_col = maze[:, len(maze[0])-1]
+        first_row = maze[0]
+        last_row = maze[len(maze)-1]
+        start_x = -1
+        start_y = -1
+        end_x = -1
+        end_y = -1
+
+        start_found = False
+        end_found = False
+        for i in range(len(first_row)):
+            if first_row[i] == 255 and not start_found:
+                start_x = i
+                start_y = 0
+                start_found = True
+                break
+        for i in range(len(last_row)):
+            if last_row[i] == 255 and not start_found:
+                end_y = len(maze)-1
+                end_x = i
+                start_found = True
+                break
+            elif last_row[i] == 255 and not end_found:
+                end_y = len(maze)-1
+                end_x = i
+                end_found = True
+                break
+        for i in range(len(first_col)):
+            if first_col[i] == 255 and not start_found:
+                start_y = i
+                start_x = 0
+                start_found = True
+                break
+            elif first_col[i] == 255 and not end_found:
+                end_y = i
+                end_x = 0
+                end_found = True
+                break
+        for i in range(len(last_col)):
+            if last_col[i] == 255 and not start_found:
+                start_y = i
+                start_x = len(maze[0])-1
+                start_found = True
+                break
+            elif last_col[i] == 255 and not end_found:
+                end_y = i
+                end_x = len(maze[0])-1
+                end_found = True
+                break
+        if not start_found or not end_found:
+            return None
+        else:
+            return start_x, start_y, end_x, end_y
+
+    def includes_arrow(self, maze, arrow_color):
+        hsv = cv2.cvtColor(maze, cv2.COLOR_BGR2HSV)
+        if arrow_color == "red":
+            lower_range = np.array([0, 100, 100])
+            upper_range = np.array([10, 255, 255])
+        elif arrow_color == "green":
+            lower_range = np.array([40, 50, 50])
+            upper_range = np.array([80, 255, 255])
+        mask = cv2.inRange(hsv, lower_range, upper_range)
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        largest_contour = None
+        largest_contour_area = 0
+        for contour in contours:
+            area = cv2.contourArea(contour)
+            if area > largest_contour_area:
+                largest_contour = contour
+                largest_contour_area = area
+        if largest_contour is not None:
+            return True
+        else:
+            return False
     def crop_maze(self, maze, start_x, start_y, end_x, end_y, direction_start, direction_end):
         up, down, left, right = self.get_least_coordinates(maze)
 
@@ -194,8 +281,11 @@ class JpgMaze:
         return [(nx, ny) for nx, ny in candidates if
                 0 <= nx < maze.shape[1] and 0 <= ny < maze.shape[0] and maze[ny, nx] == 255]
 
-    def get_maze(self, filename):
-        maze = cv2.imread(self.maze_path + filename)
+    def get_maze(self, filename, kaggle_dataset):
+        if kaggle_dataset:
+            maze = cv2.imread(self.kaggle_path + filename)
+        else:
+            maze = cv2.imread(self.maze_path + filename)
         return maze
 
     def get_least_val_in_largest_contour(self, maze, largest_contour):
@@ -234,6 +324,7 @@ class JpgMaze:
                 largest_contour = contour
                 largest_contour_area = area
         M = cv2.moments(largest_contour)
+
         center_x = int(M['m10'] / M['m00'])
         center_y = int(M['m01'] / M['m00'])
         [vx, vy, x, y] = cv2.fitLine(largest_contour, cv2.DIST_L2, 0, 0.01, 0.01)

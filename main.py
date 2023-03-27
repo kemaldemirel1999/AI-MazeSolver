@@ -1,3 +1,5 @@
+import os
+
 from aimaze_solver import AIMazeSolver
 
 
@@ -31,5 +33,14 @@ class Main:
         # maze.solve_maze("leftdown.png")
         # maze.solve_maze("inside_downleft.png")
         # maze.solve_maze("mixed_leftup.png")
-        maze.solve_maze("outside_leftup.png")
+        # maze.solve_maze("outside_leftup.png")
+
+        '''Kaggle Dataset Mazes'''
+        kaggle_path = os.getcwd() + "/kaggle_maze_dataset/rectangular_mazes_10x10"
+        files = os.listdir(kaggle_path)
+        i = 0
+        for val in files:
+            maze.solve_maze(val, True)
+            print(i)
+            i = i + 1
 

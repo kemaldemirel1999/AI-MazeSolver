@@ -20,17 +20,16 @@ class JpgMaze:
         maze = self.remove_arrow_from_image(maze, left, right, up, down)
         maze = Preprocess().preprocess_image(maze)
 
+        maze, start_x, start_y, end_x, end_y = self.crop_maze(maze, start_x, start_y, end_x, end_y, direction_start, direction_end)
+        start = (start_x, start_y)
+        end = (end_x, end_y)
         '''
-        cv2.circle(maze, (start_x, start_y), 10, (0,255,255), thickness=-1)
-        cv2.circle(maze, (end_x, end_y), 10, (0,255,255), thickness=-1)
+        cv2.circle(maze, (start_x, start_y), 10, (0, 0, 255), thickness=-1)
+        cv2.circle(maze, (end_x, end_y), 10, (0, 0, 255), thickness=-1)
         cv2.imshow("Circle", maze)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         '''
-
-        maze, start_x, start_y, end_x, end_y = self.crop_maze(maze, start_x, start_y, end_x, end_y, direction_start,direction_end)
-        start = (start_x, start_y)
-        end = (end_x, end_y)
         '''
 
         traced_maze = self.a_star_algorithm(start, end, maze)
@@ -46,81 +45,49 @@ class JpgMaze:
 
     def crop_maze(self, maze, start_x, start_y, end_x, end_y, direction_start,direction_end):
         up, down, left, right = self.get_least_coordinates(maze)
+        '''
+        cv2.circle(maze, (start_x, start_y), 30, (0, 0, 255), thickness=-1)
+        cv2.circle(maze, (end_x, end_y), 30, (0, 0, 255), thickness=-1)
+        cv2.imshow("Circle", maze)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        '''
+
+        '''
         maze = maze[up:down+1]
         maze = maze[:, left:right+1]
-        up, down, left, right = self.get_least_coordinates(maze)
-        if direction_start == "left":
-            start_x = right - 1
-        elif direction_start == "right":
-            start_x = left + 1
-        elif direction_start == "up":
-            start_y = down - 1
-        elif direction_start == "down":
-            start_y = up + 1
-
-        if direction_end == "left":
-            end_x = right - 1
-        elif direction_end == "right":
-            end_x = left + 1
-        elif direction_end == "up":
-            end_y = down - 1
-        elif direction_end == "down":
-            end_y = up + 1
-
         '''
-        if orientation_start == "vertical" and orientation_end == "vertical":
-            start_x = start_x - left
-            end_x = end_x - left
-            maze = maze[:, left:right + 1]
-        elif orientation_start == "horizontal" and orientation_end == "horizontal":
+
+        up, down, left, right = self.get_least_coordinates(maze)
+        print("before up:",up)
+        print("before down:", down)
+        print("before left:", left)
+        print("before right:", right)
+
+        if (direction_start == "left" and direction_end == "right")\
+                or (direction_end == "left" and direction_start == "right") \
+                or (direction_end == direction_start):
+            maze = maze[up:len(maze)]
             start_y = start_y - up
             end_y = end_y - up
-            maze = maze[up:down + 1]
-        else:
-            if (direction_start == "left" and direction_end == "up") or (
-                    direction_start == "up" and direction_end == "left"):
-                maze = maze[up:down + 1]
-                maze = maze[:, left:right + 1]
-                start_x = start_x - left
-                start_y = start_y - up
-                end_x = end_x - left
-                end_y = end_y - up
-                up, down, left, right = self.get_least_coordinates(maze)
-                if direction_start == "up":
-                    start_y = down - 1
-                    end_x = right - 1
-                else:
-                    end_y = down - 1
-                    start_x = right - 1
-            elif (direction_start == "left" and direction_end == "down") or (
-                    direction_start == "down" and direction_end == "left"):
-                maze = maze[0:down + 1]
-                maze = maze[:, left:len(maze)]
-                start_x = start_x - left
-                end_x = end_x - left
-                up, down, left, right = self.get_least_coordinates(maze)
-            elif (direction_start == "right" and direction_end == "up") or (
-                    direction_start == "up" and direction_end == "right"):
-                maze = maze[0:down + 1]
-                maze = maze[:, 0:right + 1]
-                start_y = start_y - up
-                end_y = end_y - up
-            elif (direction_start == "right" and direction_end == "down") or (
-                    direction_start == "down" and direction_end == "right"):
-                maze = maze[up:down + 1]
-                maze = maze[:, left:right + 1]
-                start_y = start_y - up
-                end_y = end_y - up
-                start_x = start_x - left
-                end_x = end_x - left
-                up, down, left, right = self.get_least_coordinates(maze)
-                if direction_start == "right":
-                    start_x = left + 1
-                    end_y = up + 1
-                else:
-                    end_x = left + 1
-                    start_y = up + 1
-        '''
+            up, down, left, right = self.get_least_coordinates(maze)
+            maze = maze[0:down + 1]
+        elif (direction_start == "up" and direction_end == "down") \
+                or (direction_end == "up" and direction_start == "down") \
+                or (direction_end == direction_start):
+            maze = maze[:, left:len(maze[0])+1]
+            start_x = start_x - left
+            end_x = end_x - left
+            up, down, left, right = self.get_least_coordinates(maze)
+            maze = maze[:, 0:right+1]
+
+
+
+        print("Start: x:",start_x," y:",start_y)
+        print("End: x:", end_x, " y:", end_y)
+        print("*******")
+
+
         return maze, start_x, start_y, end_x, end_y
 
     def get_least_coordinates(self, maze):
@@ -129,7 +96,7 @@ class JpgMaze:
         down = 0
         right = 0
         for row in range(len(maze)):
-            for col in range(len(maze[row])):
+            for col in range(len(maze[0])):
                 if maze[row][col] == 0:
                     if row < up:
                         up = row

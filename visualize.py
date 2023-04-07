@@ -7,7 +7,11 @@ class Visualize:
     
     def __init__(self):
         None
-    
+
+    # İlgili trace edilmiş labirent dosyasını visualize eder ve return eder.
+    # Başlangıç : mavi
+    # Bitiş: yeşil
+    # trace edilen yol: kırmızı
     def visualize_traced_maze(self, maze):
         width = 1024
         height = 1024

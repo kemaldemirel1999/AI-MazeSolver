@@ -6,21 +6,24 @@ import cv2
 class TxtMaze:
     
     def __init__(self):
-        self.maze_path = os.getcwd() + "/maze_samples/"
-        self.results_path = os.getcwd() + "/results/"
-        
+        self.maze_path = os.getcwd() + "/maze_samples/" # Labirentlerin bulunduğu path
+        self.results_path = os.getcwd() + "/results/"   # Sonuçların bulunduğu path
+
+    # Labirent ismini parametre olarak alır.
+    # Gerekli işlemleri gerçekleştirir.
     def start_maze_solver(self,filename):
         self.maze_map = {}
-        maze = self.read_txt_maze(filename)
-        self.start_point = self.find_start_point(maze)
-        self.goal_point = self.find_goal_point(maze)
-        self.make_maze_map(maze)
-        path = self.a_star_algorithm(maze)
-        self.tracePath(path,maze)
-        image = Visualize().visualize_traced_maze(maze)
+        maze = self.read_txt_maze(filename) # labirent txt dosyasından okunur ve bir array'e kaydedilir.
+        self.start_point = self.find_start_point(maze)  # başlangıç noktası bulunur ve kaydedilir.
+        self.goal_point = self.find_goal_point(maze)    # bitiş noktası bulunur ve kaydedilir.
+        self.make_maze_map(maze)    # Labirentin haritası çıkarılır. North, south, west, east şeklinde.
+        path = self.a_star_algorithm(maze)  # a-star algoritması çalıştırılarak hedef noktaya gidilen en optimal yol bulunur.
+        self.tracePath(path,maze)   # hedef noktaya gidilen path trace edilir.
+        image = Visualize().visualize_traced_maze(maze) # trace edilmiş labirent görselleştirilir.
         filename = filename[0:len(filename)-4]+".jpg"
-        image.save(self.results_path + filename)
+        image.save(self.results_path + filename) # trace edilmiş vegörselleştirilmiş labirent .jpg dosyası olarak kaydedilir.
 
+    # Txt dosyasından labirent okunur ve array'e kaydedilir.
     def read_txt_maze(self, filename):
         maze = []
         with open(self.maze_path + filename) as f:
@@ -32,31 +35,37 @@ class TxtMaze:
                 maze.append(tmp)
         return maze
 
+    # ilgili path trace edilir
     def tracePath(self, path, maze):
         for val in path:
             if(path[val] == self.goal_point):
                 continue
-            maze[path[val][0]][path[val][1]] = "x";
-        
+            maze[path[val][0]][path[val][1]] = "x"
+
+    # labirent içerisindeki başlangıç noktası bulunur.
     def find_start_point(self, maze):
         for row in range(0,len(maze)):
             for col in range(0,len(maze[row])):
                 if maze[row][col] == "s" or maze[row][col] == "S":
                     return (row,col)
-    
+
+    # labirent içerisindeki bitiş noktası bulunur.
     def find_goal_point(self, maze):
         for row in range(0,len(maze)):
             for col in range(0,len(maze[0])):
                 if maze[row][col] == "g" or maze[row][col] == "G":
                     return (row,col)        
-    
+
+    # labirent düz bir hale çevrilir.
+
     def maze_grid(self,maze):
         grid = []
         for i in range(0,len(maze)):
             for j in range(0,len(maze[0])):
                 grid.append((i,j))
         return grid
-    
+
+    # Labirentin haritası çıkarılır ve hedef noktaya gitmek için kullanılır.
     def make_maze_map(self, maze):
         col_length = len(maze[0])
         row_length = len(maze)
@@ -86,17 +95,21 @@ class TxtMaze:
                         self.maze_map[row,col]['S'] = 0
                     else:
                         self.maze_map[row,col]['S'] = 1  
-                        
+
+    # ilgili noktanın duvar olup olmadığını bulur.
     def is_it_wall(self, symbol):
         if symbol == '#' or symbol == '$':
             return True
         return False
-    
+
+    # heuristic fonksiyonudur.
     def h_diff(self,first_cell, second_cell):
         x1, y1 = first_cell
         x2, y2 = second_cell
         return abs(x1-x2) + abs(y1-y2)   
-    
+
+    # a-star algoritmasıdır ve hedef noktaya gitmek için en optimal yolu hesaplar.
+
     def a_star_algorithm(self,maze):
         start = self.start_point
         g_score = {cell:float('inf') for cell in self.maze_grid(maze)}
